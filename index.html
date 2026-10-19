@@ -1,0 +1,1952 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Đại Dịch</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%23123a63' stroke='%232fd4b8' stroke-width='5'/><circle cx='50' cy='26' r='9' fill='%233f8cff'/><circle cx='74' cy='50' r='9' fill='%23ffcb2e'/><circle cx='50' cy='74' r='9' fill='%23ff4655'/><circle cx='26' cy='50' r='9' fill='%23a7afc2'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+:root{
+  --bg:#07111f; --panel:#0d1b2e; --panel2:#12233a; --panel3:#1a3150; --line:rgba(150,190,240,.13); --line2:rgba(150,190,240,.26);
+  --ink:#eaf2ff; --muted:#8ea4c3; --accent:#2fd4b8; --accent-d:#14917c; --gold:#ffc24a; --gold-d:#c48a12;
+  --bad:#ff4d5e; --bad-d:#b4202f; --good:#3bd98a;
+  --u0:#4b95ff; --u1:#ffcb2e; --u2:#a9b1c6; --u3:#ff4f5e;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:"Be Vietnam Pro",system-ui,"Segoe UI",sans-serif}
+body.ingame{overflow:hidden;overscroll-behavior:none}
+button{font-family:inherit;cursor:pointer;touch-action:manipulation;color:inherit}
+.hidden{display:none!important}
+.muted{color:var(--muted)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:9px 14px;font-size:.95rem;font-weight:800;
+  color:#03231d;background:var(--accent);box-shadow:0 3px 0 var(--accent-d);white-space:nowrap;transition:transform .08s,box-shadow .08s,filter .15s}
+.btn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 var(--accent-d)}
+.btn.gold{background:var(--gold);color:#3a2600;box-shadow:0 3px 0 var(--gold-d)}
+.btn.red{background:var(--bad);color:#fff;box-shadow:0 3px 0 var(--bad-d)}
+.btn.ghost{background:var(--panel2);color:var(--ink);border:1px solid var(--line2);box-shadow:none}
+.btn.sm{padding:6px 10px;font-size:.82rem;border-radius:10px}
+.btn.sq{padding:9px 11px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.glow{animation:glow 1.5s ease-in-out infinite}
+@keyframes glow{50%{filter:brightness(1.18);box-shadow:0 3px 0 rgba(0,0,0,.35),0 0 22px currentColor}}
+.btn.gold.glow{animation-name:glowG}
+@keyframes glowG{50%{filter:brightness(1.1);box-shadow:0 3px 0 var(--gold-d),0 0 22px rgba(255,194,74,.7)}}
+.btn.red.glow{animation-name:glowR}
+@keyframes glowR{50%{filter:brightness(1.1);box-shadow:0 3px 0 var(--bad-d),0 0 22px rgba(255,77,94,.7)}}
+
+/* ---------- lobby ---------- */
+#lobby{min-height:100vh;min-height:100dvh;display:grid;place-items:center;padding:20px 16px;
+  background:radial-gradient(900px 600px at 20% -10%,#123d66 0,transparent 60%),radial-gradient(800px 600px at 110% 110%,#0c3a35 0,transparent 60%),var(--bg)}
+.lobby-card{width:100%;max-width:440px;background:rgba(11,25,44,.88);border:1px solid var(--line2);border-radius:26px;padding:22px 20px;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center}
+.logo{width:116px;height:116px;margin:0 auto}
+h1{margin:6px 0 0;font-weight:800;font-size:2.3rem;letter-spacing:.12em;background:linear-gradient(90deg,#8fe9ff,#2fd4b8 45%,#ffcb2e);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tag{color:var(--muted);margin:6px 0 12px;font-size:.92rem}
+label{display:block;text-align:left;font-weight:700;font-size:.9rem;margin:10px 0 4px}
+input{width:100%;font:inherit;font-size:1rem;padding:10px 14px;border-radius:12px;border:1px solid var(--line2);background:rgba(255,255,255,.05);color:var(--ink);outline:none}
+input:focus{border-color:var(--accent)}
+#codeInput{text-transform:uppercase;letter-spacing:4px;text-align:center;font-weight:800}
+.seg{display:flex;gap:6px;justify-content:center;align-items:center;margin-top:10px;font-weight:700;color:var(--muted);flex-wrap:wrap;font-size:.88rem}
+.seg button{border:1px solid var(--line2);background:rgba(255,255,255,.05);border-radius:10px;padding:5px 11px;font-weight:800;color:var(--ink);font-size:.86rem}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#03231d}
+.box{margin-top:14px;padding:12px;border-radius:16px;background:rgba(255,255,255,.035);border:1px solid var(--line)}
+.boxt{font-weight:800;text-align:left;font-size:.95rem}
+.row{display:flex;gap:8px;margin-top:10px}
+.row>*{flex:1}
+.msg{min-height:1.3em;margin-top:10px;color:var(--bad);font-weight:700;font-size:.9rem}
+.waiting .code{font-weight:800;font-size:2.2rem;letter-spacing:8px;color:#bff4ea;background:rgba(47,212,184,.1);border:2px dashed var(--accent);border-radius:16px;padding:6px 10px;margin:8px 0}
+.net{font-weight:700;font-size:.88rem}
+.net.ok{color:#7ff0c3}.net.bad{color:var(--gold)}
+.waiting .link{font-size:.82rem;word-break:break-all;color:var(--muted);margin:6px 0}
+.seats{display:flex;flex-direction:column;gap:6px;margin-top:12px;text-align:left}
+.seat{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--panel2);font-weight:700}
+.seat .x{margin-left:auto;border:0;background:none;color:var(--bad);font-size:1.1rem;font-weight:800}
+.seat.empty{background:none;border:1px dashed var(--line2);color:var(--muted);font-weight:600}
+.tagm{font-size:.78rem;color:var(--muted);font-weight:700}
+.dots:after{content:"";animation:dots 1.4s steps(4) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+/* ---------- game layout ---------- */
+#game{position:fixed;inset:0;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;grid-template-areas:"top" "map" "dock"}
+.top{grid-area:top;display:flex;align-items:center;gap:5px;padding:6px 8px;padding-top:max(6px,env(safe-area-inset-top));
+  background:linear-gradient(#0c1a2c,#091523);border-bottom:1px solid var(--line);z-index:6;min-width:0}
+.brand{font-weight:800;letter-spacing:.14em;font-size:.9rem;color:#9fe8ff;margin-right:4px;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:4px;height:34px;padding:0 8px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);
+  font-weight:800;font-size:.88rem;white-space:nowrap;flex:none}
+.chip small{font-weight:600;color:var(--muted);font-size:.7rem}
+.chip.warn{background:rgba(255,194,74,.14);border-color:rgba(255,194,74,.5)}
+.chip.hot{background:rgba(255,77,94,.2);border-color:rgba(255,77,94,.6);animation:hot 1.6s ease-in-out infinite}
+@keyframes hot{50%{box-shadow:0 0 14px rgba(255,77,94,.55)}}
+button.chip{color:var(--ink)}
+.cures{display:flex;gap:4px;flex:none}
+.vial{position:relative;width:30px;height:34px;border-radius:9px;border:1.5px dashed var(--kc);display:grid;place-items:center;font-size:.8rem;font-weight:800;
+  background:color-mix(in srgb,var(--kc) 8%,transparent);color:var(--kc)}
+.vial .s{position:absolute;left:0;right:0;bottom:1px;text-align:center;font-size:.58rem;color:var(--muted);font-weight:700;line-height:1}
+.vial .g{margin-top:-6px}
+.vial.cured{border-style:solid;background:color-mix(in srgb,var(--kc) 30%,transparent);color:#fff}
+.vial.erad{border-style:solid;background:var(--kc);color:#08121f;box-shadow:0 0 10px color-mix(in srgb,var(--kc) 60%,transparent)}
+.vial.erad .s{color:#08121f}
+.vial.low .s{color:var(--bad)}
+.sp{flex:1;min-width:0}
+.ib{width:36px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);font-size:1.05rem;flex:none}
+
+.mapwrap{grid-area:map;position:relative;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(120% 90% at 50% 35%,#0f2e51 0%,#0a1f38 52%,#06111e 100%)}
+#map{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+#map:active{cursor:grabbing}
+#land{fill:url(#landg);stroke:#2c5f8f;stroke-width:1;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+#grat{stroke:#6aa2e6;stroke-opacity:.07;fill:none;vector-effect:non-scaling-stroke}
+.edge{stroke:#a6cdff;stroke-opacity:.2;stroke-width:1.3;fill:none;vector-effect:non-scaling-stroke}
+.edge.wrap{stroke-dasharray:5 5}
+.edge.hot{stroke:#7fe7ff;stroke-opacity:.8;stroke-width:2.2}
+.city .halo{fill:none;stroke:none}
+.city.reach .halo{stroke:#7fe7ff;stroke-width:2;stroke-dasharray:3 2.6;fill:rgba(127,231,255,.08)}
+.city.pick .halo{stroke:var(--gold);stroke-width:2.4;fill:rgba(255,194,74,.12);animation:pk 1.1s ease-in-out infinite}
+.city.sel .halo{stroke:#fff;stroke-width:2.6;stroke-dasharray:none;fill:rgba(255,255,255,.12)}
+@keyframes pk{50%{stroke-opacity:.35}}
+.dot{stroke:#fff;stroke-width:1.7}
+.dot.k0{fill:#3f8cff}.dot.k1{fill:#ffcb2e}.dot.k2{fill:#1f2129;stroke:#c3c9d8}.dot.k3{fill:#ff4655}
+.shine{fill:#fff;opacity:.38;pointer-events:none}
+.danger{fill:none;stroke:#ff3349;stroke-width:2.6;animation:dg 1.5s ease-in-out infinite}
+@keyframes dg{50%{stroke-opacity:.15}}
+.cube rect{stroke:rgba(0,0,0,.6);stroke-width:.8}
+.cube .hl{fill:#fff;opacity:.38;stroke:none}
+.cube.k0 rect:first-child{fill:#3f8cff}.cube.k1 rect:first-child{fill:#ffcb2e}.cube.k3 rect:first-child{fill:#ff4655}
+.cube.k2 rect:first-child{fill:#17181e;stroke:#d5dae6}
+.cube.k2 .hl{opacity:.22}
+.pawn path,.pawn circle{stroke:#04101c;stroke-width:1.3}
+.pawn.cur{filter:drop-shadow(0 0 3px #fff)}
+.stn .b{fill:#f4f8ff;stroke:#04101c;stroke-width:1.1}
+.stn .x{stroke:#e5414f;stroke-width:1.6;fill:none;stroke-linecap:round}
+.lbl{font-family:"Be Vietnam Pro",sans-serif;font-weight:700;font-size:11.5px;fill:#e8f1ff;text-anchor:middle;paint-order:stroke;stroke:#06101d;stroke-width:3.4px;stroke-linejoin:round;pointer-events:none}
+#map.nolbl .lbl{display:none}
+#map.nolbl .city.sel .lbl,#map.nolbl .city.hasp .lbl{display:inline}
+.rip{fill:none;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:rip 1s ease-out forwards;pointer-events:none}
+.rip.big{stroke-width:5;animation-duration:1.4s}
+@keyframes rip{from{transform:scale(.4);opacity:1}to{transform:scale(3.2);opacity:0}}
+
+.mtop{position:absolute;left:8px;right:8px;top:8px;display:flex;flex-direction:column;align-items:center;gap:6px;z-index:4;pointer-events:none}
+.mtop>*{pointer-events:auto}
+.pickbar{display:flex;align-items:center;gap:8px;max-width:520px;width:100%;padding:8px 10px;border-radius:14px;background:rgba(48,34,0,.92);border:1px solid var(--gold);color:#ffe3a3;font-weight:700;font-size:.88rem;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.pickbar span{flex:1}
+.news{max-width:520px;width:100%;padding:10px 12px;border-radius:14px;background:rgba(9,22,40,.95);border:1px solid var(--line2);box-shadow:0 10px 30px rgba(0,0,0,.5);font-size:.9rem;line-height:1.4;animation:down .25s ease-out;cursor:pointer}
+.news.epi{background:linear-gradient(135deg,rgba(20,90,44,.97),rgba(8,40,22,.97));border-color:#3be27a}
+.news.ob{background:linear-gradient(135deg,rgba(110,18,30,.96),rgba(50,8,16,.96));border-color:#ff5b6b}
+.news.good{background:linear-gradient(135deg,rgba(12,80,70,.96),rgba(6,36,34,.96));border-color:var(--accent)}
+.news h4{margin:0 0 4px;font-size:1rem}
+.news .nb{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+@keyframes down{from{transform:translateY(-14px);opacity:0}}
+@keyframes up{from{transform:translateY(14px);opacity:0}}
+.ctl{position:absolute;right:8px;bottom:8px;display:flex;flex-direction:column;gap:6px;z-index:3}
+.ctl button{width:38px;height:38px;border-radius:11px;border:1px solid var(--line2);background:rgba(9,22,40,.85);font-size:1.05rem;font-weight:800;color:var(--ink)}
+.citycard{position:absolute;left:8px;right:56px;bottom:8px;max-width:460px;background:rgba(8,20,37,.95);border:1px solid var(--line2);border-radius:16px;
+  padding:10px 12px 12px;z-index:4;box-shadow:0 10px 30px rgba(0,0,0,.55);animation:up .18s ease-out;max-height:calc(100% - 16px);overflow:auto}
+.cch{display:flex;align-items:center;gap:8px}
+.cch .cd{width:14px;height:14px;border-radius:50%;flex:none;border:2px solid #fff}
+.cch b{font-size:1.05rem}
+.cch .x{margin-left:auto;border:0;background:none;color:var(--muted);font-size:1.2rem;padding:0 4px}
+.cci{display:flex;flex-wrap:wrap;gap:6px 10px;margin-top:6px;font-size:.82rem;color:var(--muted);align-items:center}
+.cci .cb{display:inline-flex;gap:2px;align-items:center}
+.cci .cb i{width:10px;height:10px;border-radius:2px;display:inline-block;border:1px solid rgba(0,0,0,.5)}
+.mopts{display:flex;flex-direction:column;gap:6px;margin-top:9px}
+.mopt{display:flex;align-items:center;gap:8px;width:100%;text-align:left;padding:9px 11px;border-radius:12px;border:1px solid var(--line2);background:var(--panel2);font-weight:700;font-size:.9rem;color:var(--ink)}
+.mopt .c{margin-left:auto;font-size:.75rem;color:var(--muted);font-weight:700;white-space:nowrap}
+.mopt small{display:block;color:var(--muted);font-weight:600;font-size:.74rem}
+.mopt:active{background:var(--panel3)}
+.mopt.go{border-color:var(--gold);background:rgba(255,194,74,.12)}
+.nbrs{margin-top:8px;font-size:.76rem;color:var(--muted)}
+
+/* ---------- dock ---------- */
+.dock{grid-area:dock;background:linear-gradient(180deg,#0b1829,#08121f);border-top:1px solid var(--line);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:7px;z-index:5;min-width:0}
+.dock>*{flex-shrink:0}
+.pstrip{display:flex;gap:5px}
+.pc{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:5px;padding:4px 6px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:.8rem;font-weight:700;text-align:left}
+.av{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--rc);font-size:.78rem;flex:none;box-shadow:0 0 0 2px rgba(0,0,0,.4),0 0 0 3px color-mix(in srgb,var(--rc) 50%,transparent)}
+.av.lg{width:40px;height:40px;font-size:1.3rem}
+.pc .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1;line-height:1.15}
+.pc .nm small{display:block;color:var(--muted);font-weight:600;font-size:.66rem;overflow:hidden;text-overflow:ellipsis}
+.pc .ct{color:var(--muted);font-size:.72rem;flex:none}
+.pc.cur{border-color:var(--accent);background:rgba(47,212,184,.1)}
+.pc.view{box-shadow:inset 0 -3px 0 var(--gold)}
+.pc .off{color:var(--gold)}
+.turnbar{display:flex;align-items:center;gap:8px;min-height:40px;flex-wrap:wrap}
+.turnbar .who{flex:1 1 90px;min-width:0;font-size:.9rem;line-height:1.2}
+.turnbar .tbb{display:flex;gap:6px;align-items:center;margin-left:auto}
+.turnbar .who small{color:var(--muted);display:block;font-size:.74rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pips{display:flex;gap:4px;flex:none}
+.pip{width:11px;height:11px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(47,212,184,.6)}
+.pip.off{background:rgba(255,255,255,.12);box-shadow:none}
+.pb{font-size:.8rem;color:#c8d6ea;line-height:1.45;padding:7px 10px;border-radius:12px;background:var(--panel);border:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.pb.warn{border-color:rgba(255,194,74,.5);background:rgba(255,194,74,.08)}
+.pb.epi{border-color:#3be27a;background:rgba(30,140,70,.14)}
+.pb b{color:var(--ink)}
+.pb .pt{flex:1 1 180px;min-width:0}
+.pb .pbb{display:flex;gap:6px;margin-left:auto;align-items:center}
+.acts{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;align-items:stretch}
+.acts::-webkit-scrollbar,.pstrip::-webkit-scrollbar{display:none}
+.ab{flex:1 1 0;min-width:54px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 7px;border-radius:12px;
+  border:1px solid var(--line2);background:var(--panel2);font-size:.7rem;font-weight:700;color:var(--ink);line-height:1.15}
+.ab .i{font-size:1.15rem;line-height:1}
+.ab.dis{opacity:.35}
+.ab.on{border-color:var(--accent);background:rgba(47,212,184,.13)}
+.acts.wrap{flex-wrap:wrap}
+.acts.wrap .pawnsel{flex:1 0 100%;justify-content:flex-start}
+.pawnsel{display:flex;align-items:center;gap:4px;padding:3px 6px;border-radius:12px;border:1px solid var(--line);background:var(--panel);flex:none}
+.pawnsel .t{font-size:.72rem;color:var(--muted);font-weight:700;line-height:1.1;margin-right:4px}
+.pawnsel button{border:2px solid transparent;background:none;border-radius:50%;padding:1px}
+.pawnsel button.on{border-color:#fff}
+.handhead{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted);font-weight:700;min-height:22px}
+.handhead b{color:var(--ink)}
+.handhead .over{color:var(--bad)}
+.lnk{border:0;background:none;color:var(--accent);font-weight:700;font-size:.78rem;padding:2px 4px}
+.hand{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 4px;min-height:64px;scrollbar-width:thin}
+.hand .empty{color:var(--muted);font-size:.82rem;align-self:center}
+.card{flex:none;width:88px;height:62px;border-radius:11px;padding:6px 7px;position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  background:linear-gradient(150deg,var(--c1),var(--c2));color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.35),inset 0 0 0 1px rgba(255,255,255,.2);border:0;text-align:left;overflow:hidden}
+.card::before{content:"";position:absolute;right:-14px;bottom:-14px;width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.16);box-shadow:0 0 0 7px rgba(255,255,255,.06)}
+.card .cn{font-weight:800;font-size:.78rem;line-height:1.12;position:relative}
+.card .cs{font-size:.62rem;opacity:.85;font-weight:600;position:relative}
+.card .pin{position:absolute;top:3px;right:5px;font-size:.72rem}
+.card.k0{--c1:#4d97ff;--c2:#1a46a0}.card.k1{--c1:#ffd54a;--c2:#d09600;color:#2e2100}.card.k2{--c1:#525868;--c2:#16181e}.card.k3{--c1:#ff5d68;--c2:#a0121e}
+.card.ev{--c1:#7a5cff;--c2:#2b1d86}
+.card.epi{--c1:#2fc461;--c2:#0b5a28}
+.card.here{box-shadow:0 0 0 2px #fff,0 3px 10px rgba(0,0,0,.4)}
+.card.sel{box-shadow:0 0 0 3px var(--gold),0 3px 10px rgba(0,0,0,.4);transform:translateY(-3px)}
+.card.big{width:120px;height:86px;padding:9px}
+.card.big .cn{font-size:.95rem}
+.cc{display:inline-flex;align-items:center;gap:3px;padding:1px 7px;border-radius:999px;font-weight:700;font-size:.78rem;white-space:nowrap;border:1px solid rgba(255,255,255,.18)}
+.cc.k0{background:#2a64c9;color:#fff}.cc.k1{background:#f2c022;color:#2e2100}.cc.k2{background:#2a2d36;color:#e6eaf3;border-color:#8c94a8}.cc.k3{background:#d42e3c;color:#fff}
+.cc.ev{background:#4b33c4;color:#fff}.cc.epi{background:#1c8a43;color:#fff}
+button.cc{cursor:pointer}
+
+@media (min-width:900px), (orientation:landscape) and (min-width:640px){
+  #game{grid-template-columns:minmax(0,1fr) clamp(290px,30vw,380px);grid-template-rows:auto minmax(0,1fr);grid-template-areas:"top dock" "map dock"}
+  .dock{overflow-y:auto;border-top:0;border-left:1px solid var(--line);padding-top:max(8px,env(safe-area-inset-top))}
+  .acts{flex-wrap:wrap}
+  .ab{flex:1 0 70px}
+  .hand{flex-wrap:wrap;overflow:visible}
+  .pstrip{flex-wrap:wrap}
+  .pc{flex:1 1 calc(50% - 5px)}
+}
+@media (max-width:520px){
+  .pstrip.n4 .pc .nm small{display:none}
+  .pstrip.n4 .pc{padding:4px 5px;gap:4px}
+  .brand{display:none}
+  .top{gap:4px;padding-left:6px;padding-right:6px}
+  .chip{padding:0 6px;font-size:.82rem}
+  .vial{width:27px}
+}
+@media (max-width:360px){
+  .chip small{display:none}
+  .vial{width:24px}
+}
+
+/* ---------- overlay / modal ---------- */
+.overlay{position:fixed;inset:0;background:rgba(2,8,16,.62);display:flex;align-items:flex-end;justify-content:center;z-index:50}
+.modal{background:#0c1b2f;border:1px solid var(--line2);border-radius:20px 20px 0 0;width:100%;max-width:560px;max-height:88vh;max-height:88dvh;overflow:auto;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:up .22s ease-out;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+@media (min-width:640px){.overlay{align-items:center;padding:16px}.modal{border-radius:20px}}
+.modal h2{margin:0 0 4px;font-size:1.2rem}
+.modal h3{margin:14px 0 6px;font-size:.98rem;color:#9fe8ff}
+.modal p{margin:6px 0;line-height:1.5}
+.modal .sub{color:var(--muted);font-size:.86rem;margin:0 0 10px}
+.mrow{display:flex;gap:8px;margin-top:12px}
+.mrow>*{flex:1}
+.cardgrid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.list{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.li{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);font-size:.9rem}
+.li .sp{flex:1}
+.rules{font-size:.9rem;line-height:1.55}
+.rules ul{margin:4px 0;padding-left:20px}
+.rules li{margin:2px 0}
+.tabs{display:flex;gap:4px;overflow-x:auto;margin:-4px -4px 10px;padding:4px;scrollbar-width:none;position:sticky;top:-16px;background:#0c1b2f;z-index:2}
+.tabs button{flex:none;border:1px solid var(--line);background:var(--panel2);border-radius:10px;padding:6px 10px;font-weight:700;font-size:.82rem}
+.tabs button.on{background:var(--accent);color:#03231d;border-color:var(--accent)}
+.log{display:flex;flex-direction:column;gap:2px;font-size:.84rem}
+.log div{padding:3px 0;border-bottom:1px dashed var(--line);line-height:1.4}
+.log .sys{color:#9fe8ff;font-weight:700}
+.log .bad{color:#ffb3bb}
+.log .good{color:#8ff0cf}
+.log .epi{color:#8dffb0;font-weight:700}
+.role{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;background:var(--panel2);border:1px solid var(--line);margin:8px 0}
+.role .rd{font-size:.84rem;color:#c5d3e8;line-height:1.45;margin-top:2px}
+.track{display:flex;gap:4px;flex-wrap:wrap;margin:6px 0}
+.track span{min-width:30px;height:30px;border-radius:8px;display:grid;place-items:center;border:1px solid var(--line2);font-weight:800;font-size:.85rem;color:var(--muted)}
+.track span.on{background:var(--bad);border-color:var(--bad);color:#fff}
+.track span.on.ok{background:var(--gold);border-color:var(--gold);color:#3a2600}
+.track span.rt.on{background:var(--good);border-color:var(--good);color:#04230f}
+.fc{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);margin:5px 0}
+.fc .n{width:22px;text-align:center;color:var(--muted);font-weight:800}
+.fc .sp{flex:1}
+.fc button{width:36px;height:34px;border-radius:9px;border:1px solid var(--line2);background:var(--panel3);font-weight:800}
+.stats{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem}
+.stats td{padding:6px 4px;border-bottom:1px solid var(--line)}
+.stats td:last-child{text-align:right;font-weight:800}
+.big-t{font-size:1.6rem;text-align:center;margin:4px 0}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:40;opacity:0}
+#fx.red{background:radial-gradient(circle at 50% 45%,transparent 25%,rgba(255,40,70,.45));animation:flash 1s ease-out}
+#fx.green{background:radial-gradient(circle at 50% 45%,transparent 15%,rgba(40,230,100,.45));animation:flash 1.6s ease-out}
+#fx.gold{background:radial-gradient(circle at 50% 45%,rgba(255,200,90,.35),transparent 70%);animation:flash 1.4s ease-out}
+@keyframes flash{0%{opacity:1}100%{opacity:0}}
+.shake{animation:shake .45s}
+@keyframes shake{20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,30px);opacity:0;background:#eaf2ff;color:#0b1a2c;padding:10px 16px;border-radius:12px;
+  font-weight:700;transition:.25s;z-index:60;max-width:calc(100vw - 32px);text-align:center;pointer-events:none;font-size:.9rem}
+.toast.show{transform:translate(-50%,0);opacity:1}
+</style>
+</head>
+<body>
+
+<!-- ============ LOBBY ============ -->
+<section id="lobby">
+  <div class="lobby-card">
+    <div id="lobbyMain">
+      <svg class="logo" viewBox="0 0 120 120" aria-hidden="true">
+        <defs>
+          <radialGradient id="lg1" cx="40%" cy="35%"><stop offset="0" stop-color="#2a6aa8"/><stop offset="1" stop-color="#0b2a4a"/></radialGradient>
+        </defs>
+        <circle cx="60" cy="60" r="40" fill="url(#lg1)" stroke="#2fd4b8" stroke-width="2.5"/>
+        <path d="M30 48c8-6 16-3 22 2s14 3 18-3 12-6 20 0M24 66c10 5 20 2 26-3s16-5 22 2 14 6 24 1" fill="none" stroke="#5fb0e8" stroke-width="2" opacity=".55"/>
+        <ellipse cx="60" cy="60" rx="18" ry="40" fill="none" stroke="#7fd8ff" stroke-width="1.2" opacity=".35"/>
+        <line x1="20" y1="60" x2="100" y2="60" stroke="#7fd8ff" stroke-width="1.2" opacity=".35"/>
+        <g>
+          <animateTransform attributeName="transform" type="rotate" from="0 60 60" to="360 60 60" dur="18s" repeatCount="indefinite"/>
+          <ellipse cx="60" cy="60" rx="54" ry="54" fill="none" stroke="#2fd4b8" stroke-width="1" stroke-dasharray="3 6" opacity=".5"/>
+          <circle cx="60" cy="6" r="7" fill="#3f8cff" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="114" cy="60" r="7" fill="#ffcb2e" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="60" cy="114" r="7" fill="#ff4655" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="6" cy="60" r="7" fill="#22252e" stroke="#c3c9d8" stroke-width="1.5"/>
+        </g>
+      </svg>
+      <h1>ĐẠI DỊCH</h1>
+      <p class="tag">Pandemic · hợp tác 2–4 người · cùng chặn 4 dịch bệnh và tìm ra thuốc giải</p>
+      <label for="nameInput">Tên của bạn</label>
+      <input id="nameInput" maxlength="16" placeholder="VD: Hoàng" autocomplete="off">
+      <div class="seg" id="diffSeg">Độ khó:
+        <button data-d="4">Nhập môn</button><button data-d="5" class="on">Tiêu chuẩn</button><button data-d="6">Anh hùng</button>
+      </div>
+      <div class="box">
+        <div class="boxt">🧑‍🔬 Chơi một mình <span class="tagm">— bạn điều khiển cả đội</span></div>
+        <div class="seg" id="soloSeg">Số nhân vật:
+          <button data-n="2" class="on">2</button><button data-n="3">3</button><button data-n="4">4</button>
+        </div>
+        <div class="row"><button class="btn" id="soloBtn">Bắt đầu</button></div>
+        <div class="row hidden" id="resumeRow"><button class="btn gold" id="resumeBtn">▶ Tiếp tục ván đang chơi</button></div>
+      </div>
+      <div class="box">
+        <div class="boxt">🌐 Chơi online với bạn bè</div>
+        <div class="row"><button class="btn ghost" id="createBtn">Tạo phòng</button></div>
+        <div class="row"><input id="codeInput" maxlength="5" placeholder="MÃ PHÒNG" autocomplete="off"><button class="btn ghost" id="joinBtn" style="flex:0 0 auto">Vào phòng</button></div>
+      </div>
+      <div class="row"><button class="btn ghost" id="rulesBtn0">📖 Xem luật chơi</button></div>
+      <div class="msg" id="lobbyMsg"></div>
+    </div>
+    <div id="lobbyWait" class="waiting hidden">
+      <h2 style="margin:4px 0 0" id="waitTitle">Phòng đã tạo!</h2>
+      <p class="tag" id="waitTag">Gửi mã này cho bạn bè (2–4 người). Gửi xong nhớ quay lại tab này.</p>
+      <div class="code" id="waitCode">-----</div>
+      <div class="net" id="netStatus"></div>
+      <div class="link" id="waitLink"></div>
+      <div class="row" id="copyRow"><button class="btn ghost sm" id="copyBtn">Sao chép link mời</button></div>
+      <div class="seats" id="seatList"></div>
+      <div id="hostCtl">
+        <div class="seg" id="diffSeg2">Độ khó:
+          <button data-d="4">Nhập môn</button><button data-d="5">Tiêu chuẩn</button><button data-d="6">Anh hùng</button>
+        </div>
+        <div class="row"><button class="btn ghost" id="addLocalBtn">+ Nhân vật do tôi điều khiển</button></div>
+        <div class="row"><button class="btn" id="startBtn">Bắt đầu</button></div>
+      </div>
+      <p class="tag" style="margin-top:12px" id="waitNote">Đang chờ người chơi<span class="dots"></span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAME ============ -->
+<section id="game" class="hidden">
+  <div class="top">
+    <span class="brand">ĐẠI DỊCH</span>
+    <button class="chip" id="obChip" title="Số lần bùng phát (thua khi tới 8)"></button>
+    <button class="chip" id="rateChip" title="Tốc độ lây nhiễm"></button>
+    <div class="cures" id="cures" title="Thuốc giải · số khối còn trong kho"></div>
+    <button class="chip" id="deckChip" title="Chồng thẻ người chơi"></button>
+    <span class="sp"></span>
+    <button class="ib" id="menuBtn" title="Nhật ký, thông tin, luật">☰</button>
+  </div>
+  <div class="mapwrap" id="mapwrap">
+    <svg id="map" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1830 840">
+      <defs>
+        <linearGradient id="landg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c3b5e"/><stop offset="1" stop-color="#132c47"/></linearGradient>
+      </defs>
+      <path id="grat"/>
+      <path id="land"/>
+      <g id="edges"></g>
+      <g id="cities"></g>
+      <g id="fxl"></g>
+    </svg>
+    <div class="mtop" id="mtop">
+      <div class="pickbar hidden" id="pickbar"></div>
+      <div class="news hidden" id="news"></div>
+    </div>
+    <div class="ctl" id="ctl">
+      <button id="zin" title="Phóng to">＋</button>
+      <button id="zout" title="Thu nhỏ">－</button>
+      <button id="zme" title="Tới quân đang hành động">◎</button>
+      <button id="zfit" title="Xem toàn bản đồ">⤢</button>
+    </div>
+    <div class="citycard hidden" id="citycard"></div>
+  </div>
+  <div class="dock" id="dock">
+    <div class="pstrip" id="pstrip"></div>
+    <div class="turnbar" id="turnbar"></div>
+    <div id="phasebar"></div>
+    <div class="acts" id="acts"></div>
+    <div class="handhead" id="handhead"></div>
+    <div class="hand" id="hand"></div>
+  </div>
+</section>
+
+<div id="fx"></div>
+<div id="overlay" class="overlay hidden"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ================= DATA ================= */
+// [khoá, tên, màu bệnh (0 Xanh · 1 Vàng · 2 Đen · 3 Đỏ), x, y, dân số (triệu)]
+const CITY=[
+  ["sf","San Francisco",0,100,240,5.9],["chi","Chicago",0,303,224,9.1],["mon","Montréal",0,395,178,3.4],["ny","New York",0,452,214,20.5],
+  ["was","Washington",0,414,262,4.7],["atl","Atlanta",0,325,292,4.7],["lon","Luân Đôn",0,790,128,8.6],["mad","Madrid",0,785,258,5.4],
+  ["par","Paris",0,845,182,10.8],["ess","Essen",0,892,120,0.6],["mil","Milan",0,918,205,5.2],["stp","St. Petersburg",0,1015,95,4.9],
+  ["la","Los Angeles",1,140,292,14.9],["mex","Mexico City",1,245,382,19.5],["mia","Miami",1,370,345,5.6],["bog","Bogotá",1,396,485,8.7],
+  ["lim","Lima",1,370,600,9.1],["san","Santiago",1,400,745,5.7],["bue","Buenos Aires",1,505,752,13.6],["sao","São Paulo",1,565,670,20.2],
+  ["lag","Lagos",1,860,472,11.5],["kin","Kinshasa",1,932,549,9.0],["joh","Johannesburg",1,1005,690,3.9],["kha","Khartoum",1,1035,410,4.9],
+  ["alg","Alger",2,858,300,2.9],["cai","Cairo",2,1026,308,14.7],["ist","Istanbul",2,1010,232,13.6],["mos","Mát-xcơ-va",2,1090,140,15.5],
+  ["bag","Baghdad",2,1095,285,6.2],["riy","Riyadh",2,1120,353,5.0],["teh","Tehran",2,1170,240,7.4],["kar","Karachi",2,1228,330,20.7],
+  ["mum","Mumbai",2,1262,402,16.9],["del","Delhi",2,1312,305,22.2],["che","Chennai",2,1330,440,8.9],["kol","Kolkata",2,1385,345,14.4],
+  ["bei","Bắc Kinh",3,1520,225,17.3],["seo","Seoul",3,1598,228,22.5],["tok","Tokyo",3,1712,248,13.2],["sha","Thượng Hải",3,1555,292,13.5],
+  ["hkg","Hồng Kông",3,1512,372,7.1],["tai","Đài Bắc",3,1610,355,8.3],["osa","Osaka",3,1700,315,2.9],["bkk","Bangkok",3,1430,425,7.2],
+  ["hcm","TP. Hồ Chí Minh",3,1490,470,8.3],["man","Manila",3,1600,440,20.8],["jak","Jakarta",3,1481,561,26.1],["syd","Sydney",3,1740,740,3.8],
+];
+const EDGES="sf-tok sf-man sf-la sf-chi chi-la chi-mex chi-atl chi-mon mon-was mon-ny ny-was ny-lon ny-mad was-atl was-mia atl-mia "+
+  "lon-mad lon-par lon-ess mad-par mad-alg mad-sao par-ess par-mil par-alg ess-mil ess-stp mil-ist stp-ist stp-mos "+
+  "la-mex la-syd mex-mia mex-bog mex-lim mia-bog bog-lim bog-sao bog-bue lim-san bue-sao sao-lag lag-kha lag-kin kin-kha kin-joh joh-kha "+
+  "kha-cai alg-ist alg-cai cai-ist cai-bag cai-riy ist-mos ist-bag mos-teh bag-riy bag-kar bag-teh riy-kar teh-kar teh-del kar-mum kar-del "+
+  "mum-del mum-che del-che del-kol che-kol che-bkk che-jak kol-bkk kol-hkg "+
+  "bei-seo bei-sha seo-sha seo-tok tok-sha tok-osa sha-tai sha-hkg hkg-tai hkg-man hkg-hcm hkg-bkk tai-osa tai-man bkk-jak bkk-hcm hcm-jak hcm-man man-syd jak-syd";
+const LAND="M1699 602l4 16 4 0 5 5 1 10 2 3 3 15 15 9 5 15 2 1 0-3 4 2 1 7 6 5 8 13 0 8 3 11-4 19-3 7-7 8-7 16-1 12-13 3-6 5-4 0 1 3-6-4 1-2-3 2-2-2 3-1-2-2-8 7-6-3-6 0-7-4-3-4-1-6-4-6 2 0 0-1-7 1 2-4-2-6-3 7-5 1 1-3 2 0 4-9-1-7-4 7-4 3-3 7-2 0-3-3 2 0-2-4-3-5-2-1-1-4-18-8-32 6-10 5-4 6-22 1-12 7-8 0-9-5 0-5 2 0 2-3 0-10-4-8-1-10-10-21 4 3-2-7 1 4 3 1-4-13 3-18 1 4 3-4 12-8 4 0 11-5 11-3 8-10 0-8 4-4 3 8 2-5-1-4 7 1-3-1 2-3-1-3 1-1 2 1-1-2 3 0-1-3 3-3 0 2 2-1 0-3 3 1 2-3 4 2 4 5-1 4 3-4 7 3 1-2-3-3 8-14 1 1 3-4 1 2 7-1 0-3-4-4 18 7 6-2-2 2 2 2 3-3 3 2-3 7-3 0-3 11 16 13 5 1 1 3 8 2 5-11 1-15 4-20 3-2 1 8 2 1zM1825 660l17 14-12-7-5-7zM1606 512l6-5-2 6 3 3-6 0 4 8-5-4-1-10 3-7-2 9zM1619 538l4 2 2 5-6-4-8 1-2-2-2 2 2-4 10 0zM1577 578l-11 3-7-2 0-2 5-1 10 2 3-3 0 3zM1549 576l5 0 0 3-13 2 2-4 5 2 1-1-2-3 2 1zM970 -32l4 2 7 1-2 1 10 2-12 3-2 0 1-2-10 1 4-3-9-4 9-1zM1142 34l-9 3-3-2 4-4 8 3zM938 97l-3 2 2 2-2 0 0 3-1 0-10-9 5-1 3 2-1-2 3 0 4 3zM39 124l8 6-3 0 4 2 0 3-10-7 3-1-3-1 1-2zM418 231l5-1-7 3-11 3 4-4 11-3-2 2zM1751 548l3 0-2 8-9 6-5 0-8-4 1-2 8 1 2-4 0 4 3 0 6-5 0-5 1 1zM1604 577l-12 6-5 6-5 1 0-5 9-6 13-2zM1710 804l8 2 11-2 1 10-1-2-1 2 0 6-4-2-3 5-5 0 1-2-4-3-2-4 2 0-4-6-1-5 2 1zM1457 -37l-3 3 9-2 8 2 1 3-36 3 14-9 7 0zM1680 -13l5 2 4-4 23 4-8 4-7-2 1-3-4 0-1 2 6 3-21 0-3 2-13-4 2-3 9-3 7 2zM1693 1l7 2 1 2-23-1 15-3zM1721 -10l24 2-6 2-9 0-13-2 2-3 2 1zM1879 807l7-2-2 2 2-1-2 2 2 2-10 11 2 4-6-1 1 1-6 3-2 11-10 5-16-4 3-2-2-1 3-1-1-2 8-7 16-9 8-15 4-1-2 1 3 4zM1597 454l3 14-3 6-3-6-1 4 1 4-2 3 0-3-2 1-5-3 1-7-3-2-2 2-4-2-5 6 2-7 8-5 2 2 0 2 6-6 4-1 0-4 3 2zM1572 395l5 2 2-1 0 5 2 4-7 12 1 8 3 1 3-3 2 4 2-3 2 2-1 1 1 3 2 1-1 3-8-8 0 5-5-5-3 2-4 0 2-6-2-2-1 3-2-2-2-10 4 1 2-17 3 0zM1641 523l4 1 0 10 6 7 2 0 5-7 9-6 40 17 8 7-1 4 11 4 2 5-5 1 1 4 6 5 2 6 4 0 1 3 4 2-1 2 6 2-3 0 2 2-17-4-11-13-7-4-4 1-3-2 2 4-3 0 1 1-9 0 7 4-4 4-9 0-7-8 1-2-8 3 2-5-3-2 3-1-3-1 1-1-3-8-6-5-13-4-3-2 1-1-5-1-2-3 1-3-3 6-2 2-1-6-5-3 7-3 3 1 2-3-10 1-2-5-6-1 2-4 7-4 6 3zM1589 511l-2 4-4 1-20-2-2 2-1 6 4 6 3-1 2-3 10-2 2 1-13 8 6 7 0 5 3 6-4 1-1 2-2-1 0-4-5-4 1-6-2 0-2 2 1 18-6 0 1-11-1-3-3-1-1-5 4-13 1-1 1 1-1-5 4-8 2 1 2-3 17 3 7-6 1 1-2 4zM1484 560l6 2 2 4 11 1 2-4 10 3 3 6 8 1 2 6-8-3-11 0-30-6 0-3-7-2 4-6 8 1zM1419 481l6 1 5 7 8 7 5 7 2 1 1-2 8 10 4 1 0 2-3 1 5-2 2 2-1 6 5 4 3 7-1 3 4-1 4 5-2 19-6-2 0 2-19-19-7-16-7-8-3-11-6-4-4-8-9-9-1-5 7 2zM1541 473l3-1 2 3-1 3 3-1 0 2 8 2-6 3 1 4-6 1 2 3-5 1 6 9-1 2 7 7-3 1-4-2-2 6 0 7-4 4-1-2-2 6 1 4-3 8-8 4-2-6-4 1-4-3-1 2-6 2-1-5-8 1-2-12-5-6-1-13 4-4 9 4-1-1 3-8 9-3 6-10 9-2-1-3 3-1 6-8 0 1zM1247 -16l-39 7-10 5-7 1 1 1-5 2 0 2-3-1 1 1-5 3-14 0-3-3 14-5-4-1 6-3-3-1 3 0 28-8 20-1 19-4 8 2-7 3zM1172 5l7 1-7 4 0 4 7 6 7 3-18 0-8-1 5-2-5-3-11-1 0-2 8-4-2-2 5 0-1-2 13-1zM1697 137l3 10 0 10 9 18-5-3-4 0-2 6 0 3 6 7 0 4-1-3-4-2-2 4-2-3 0-9-2-5 0-15-3-5 1-9 4-1 1-3-2-3 3-1zM1708 204l5 3 3-2-1 3 2 3 3 0-2 1-7 1-3 5-8-6-4 1-3-2-1 1 6 5-6 0-3-7 3-2-1-2 6 1-2-13 13 10zM1699 220l6 12 0 5-3 8 1 8-1 7 2 5-5 7 0-7-2 4-2 0-2 5-1-5-3 5-7 0 1-2-2 1-1-4-2 4 3 4-4 1-5 8-4-6 2-7-5-2-13 5-8 0-1 6-4-3-9 1 1-5 4 0 13-12 20-2 1 3 4-1 5-11 0-6 3 0-2 3 3 4 6-4 5-6 2-10-2-9 1-4 5 3 0-2-2-1 0-2 2 2zM1662 277l2 0 1 5-4 7-5-3-7 9-3-2-1-6-4 1 6-4 3-5 2 2 7-5 3 1zM1633 285l5 0-2 4 4 0 1 4-8 17-2 0 0 2-4 3 1-8-2 2 0 4-4-3 2-1-2-6 5-6-1-2-3-4-1 4 2 1-3-1-3 3-1-6 3 3-5-5 13-9 5 4zM1566 366l0 5-8-14 4-9 2-1 4 4-2 15zM1498 378l1 3-6 10-4 2-4-3-1-6 4-5 8-2 2 1zM1320 449l4 3 7 15-1 6-7 3-4-6-1-9 3-10 2 1-3-3zM1137 605l3 5 2 17-1 3-3-3 1 6-3 13-13 46-12 5-7-4-4-18 1-8 5-10-2-17 3-8 10-4 1 1 1-2 3-2 1 1 1-5 1 2 3-2 0-7 5-3 0-6 2-2 2 2zM349 356l12 2 3 3 22 9 0 3 5 0 4 4-21 2 3-4 0-2-6 0-3-6-19-5-1-1 2 0-1-2-5 0-8 5-5 1 5-6 13-3zM941 -41l6 0-1 3 4-1 3 1-1 1 12 1 4 3-13 2-15 13-16-7 17-2-16 1-3-2 20-3-3-1 2-1-8 2-1-2-4 0-1 2 1 0-9 1-11-5 6 0-2 0 0-2-5 1-3-4 18-1-7 2 9 2 4-4 10 6-3-5 2-2 4 1zM913 266l1 3-4 11-9 2-2-15 3 0 7-4 4 3zM914 248l0 7-3 4-2 3-3-1-2-7 8-5 1-3 1 2zM955 276l-6 11-17-2 3-3 7-1 13-5zM524 28l5 3-10 2-9-3 4-2-3-1 3-1 10 2zM77 164l10 2 13 13-9-2-2-1 2-2-4 1-3-3-3 0 2-2-10-3 0-2 2-1-3 1-2-3 7 2zM408 380l6-1 6 1 2 3 3 0-3 1 6 2 2 2-2 2-4-1-10 1-3 5-3-5-11 2-4-3 1-1 9 1 3-1-3-4 1-2-4-3 8 1zM542 520l8 0-3 8-10 3-1-11 6 0zM802 82l-9 8 14-5 2 1-14 11 4 0-8 3 8-1 6 2 2 6 8 4-1 1 2 3-7 0 8 3-3 4 9-2 6 2-2 7-12 9 9 0 0 2-12 6-14 1-5 4-7-1-5 6-3-1-9 5 10-13 7-2 6-7-7 5-6-2-5 1 9-10 0-3-4 2 3-3 9-6 2 1-2-2 3-6-3 1-2-2 5-6-13 6 5-11-1-1-3 3 2-3-2 1-4 7 6-12-5 2 11-15 12-3zM769 115l6-3 2 3-2 1 2 1-6 6 0 9-3 7-17 11 1-4-3 2 2-4-1 0 7-6-5 2 5-6-4 0 3-5-2 1 0-3 7-3 3-4-3 1 3-4 3-2 0 2 2-4 2 0-2 2zM1920 35l28 9 0 2 3 1-1 5 5 1 1 1 1-1-4-5 5 0 3 1-1 1 5-1-3 0 7 0 13 7-6 3-5-2 2 2-10-1 4 2-3 1 3 2-5 1 4 3-3-1-2 2-1-2-2 1-11-3-4-4-13 0-4-4 3-3-2 2-2-2-4 3 3 3-7 5-6 2-13-3 4 1-6-1-9 2 9-1 2 1-1 1 7-1 2 3 3-1 3 4-1 2 5 3 1 3-2 3-13-3 1 1-26 8-13 7-2 3-7-4-12 1-5 4 0-4-8 4-8-1-10 13 2 3 2-2 3 1-2 4 3 7-3 2-1-2 2-2-2 1-3 2-3 5 3 5-13 4 0 7-9 1-2 8-9 6-7-29 3-11 5-4 0-4 9-1 22-17 10-3 3-10 7-1-5-2-7 1-1 7-5-1-13 8 1-3-3 0 3-6-19 1-17 13-1 2 6 3-23 2-1-2 6-1-15-3-5 1-1 2-13-1-3 2-3-2-18 1-29 22-14 8 3 3 6 0-1 5 6-3-2 1 3 1-3 3 7-3 0 3 1-5 6 0 10 7-1 2-2-1 4 7-5 8 0 11-10 13-16 13-13 3-7-2 0-2-4 0-5 3-3 0 0 2-8 4 0 6-19 9-2 5 8 4 9 14 0 11 1 1-3 9-8 1-1 3-7-1 0 3-3-1-1 4 0-3-7 5-2-4 3-2-2-3 4-8-2-9-2-1 3-2 3 1 1-1-2-8-5 1-2-2-4 3-2-2 2-1-4 0 7-6-3-1 3-6-6 0-1-3-11 6-12 9 5-6-3-1 7-9-2-3-4 2-15 16-6 1-1 6 6 2-1 6 1 1 9-7 5 2 6 0-2 5-3-1-7 4-1 5-3 0-6 12 6 4 4 14 7 7-9-3-2 1 4 0 8 9-9 4 6 1 7 4-4 2 4 1 0 3-3-1 3 7-4-1-2 1-1 9-4-1 3 3-4 1 3 1 2 5-3-1 1 1-2 0-1 4-6 0 2 2-3 4-4-1-1 4-13 0-2 4-2-2-3-5 0 7-19 7-2 3 2 4-1 1-3 0-1-5 2-5-2-1-3 2-4-4 0 3-4 1-3 4-3 0-6 16 5 9 15 20 6 20-1-1-1 9-9 5-2-2 0 2-2-1 0 4-3-3 3 4-4-2 2 4-6 4-2 0 1-9-8-4-1-4-2 1-4-9-5-3-4 0 0-6-5 1 0 8-5 13 1 7 3 0 4 15 6 2 10 11 2 16 4 11-1-1-3 2-13-11-7-25-9-13-2 0 2-13-1-4 2-7-1 0-1-10-4-12-1-12-2 0-3-6 0 5-2 1-2-1 1 2-6 5 0-3-1 2-2-2-1 2 0-5-3 4 3-11-4-12 0 3-3-4 3 0-2-3-3-1 0 1-1-4-1 2-3-5-3-10-2-4-3 2-2-7-2 1 2 1 0 6-3 4-1-4-3 5 0-4-1 4-2-3 0 3-2 1 0-4 0 3-3 1-1-6 0 4-7 4 0 7-4 3-6 1 2 1-8 9-11 8 0 4-6 2-2 4-4 0-2 4 2 12-2-1 2 1-4 15 1 7-3 0-2 5 2 3-5 0-3 5-3 2-6-5-19-53-4-24 1-6-1-5 3-2-4 0 2-4-4 0-1 8-6 3-3-1-9-10 7-2 2-4-5 3-5-2-2-4 2-2-4 2 0-2-4 0-6-12-29 4-5-2-14 0-3-1-1-8-3-2-10 6-6-1-14-9-8-18-4 2-4-4-1 4-7 1 1 4-3 1 3 1 5 13 9 8-1 4 4 9 3-8 1-2 2 2-3 11 5 2 13-3 15-16 0 13 3 3 8 2 5 8-8 13-2-1-2 2-1 8-6 2-2 6-6 1-2 5-15 4-3 6-17 7-4 4-4 0-24 10-3-1-2-4-3-13 0-10-13-20-9-8-3-11-4-7-6-5-15-28-3 0 2-11-4 13-5-6-4-10 1 7 5 8 3 9 11 19-2 1 2 6 7 6 3 7 2 15 7 5 8 20 0-2 2 3 6 3 13 15 0 3-5 3 4 0 7 8 4 0 14-5 17-3 4-3 3 1-2 10 2 0-2 1-1 6-17 35-12 14-14 11-14 19-7 6-6 14-2 9 4 7-1 10 2 11 6 5-1 16 2 12-2 5-4 7-14 8-7 8-8 8-2-1 4 19 1-2 0 1 0 13-3 4-13 7-2 17-15 22-13 12-14 7-18 0-15 5-7-2 0-2-2 1-4-10 3-2-1-6-9-19-8-12-5-22 0-12-16-31 0-15 4-17 7-9 1-8-5-14 2-4-6-16 4-2-5 0-2-9-13-15-4-8 3 2-5-7 4-2 0-4 3 2 1-1-4-3 2 0-2-4 4-14-2-6-4-1 0-3-4-2 0 2-8-1 0 2-1-2 0 2-5 1-3-4 0-4-2-1 2 0-6-5-6-1 1-1-14 3-20 10-7-3 0-1-1 1-6-1-20 6-9-4-20-17 0-2-5-5 3-1-2 0 1-2-4-7-10-10-1-1 3-1-3-1 3-2-6 1-5-4 2-1-2 0 1-6 7 0-6 1-1-5-5-5 6-7 3-15-3-11 2-6-4-6-2 2 1-7 7-14 6-6 3-11 5-3 3-8 8-2 7-7-2-9 1-6 3-2 7-1 2-9 3 1 6 5 18 5 21-3 34 3 10-3 13 1 16-4 4 0 1 3 5-3-5 6 3 4-9 6 0 2 14 2 18-2 2 4 12-1 5 2 7-4 1-5 4-4 10-6 4 1 0 2 8-1 1 2 8-1 12 3 11-5 4 0 1 3 1-1 2 2 5-1 4-3 9-23 0-12 2-4-4 2-4-1-10 6-6-4-3 0-2 4-3 2-3-3-6 1 4-3-4 2 1-7-4 0 2-3 0 2 2-2 1-7-3 2 1-4 2-4 9-2 4-3-3-1 1-2 8-1 10-8 7-1 7 5 11 1 12-1 9-6-2-6-27-14 1-2 5 0 2-4 3-1-4-3 4-1 5-2-1-2-19 5-4 3 1-2-2 2 1 3 2 3 6-1-1 3-5-1-8 6-2-1 1-4-5-2 5-5-7-1-1-2 4-1-2 0-1-4 0 4-4 1-4 6-1 7-2 1 0-2-2 12-5 8 4 9-6 2-6 8 3-5-6 0-6 4 2 3-3 0 1 2-2-1-1 2-1-4-1 1 1 9-4 3 5 2-1 3-4 1 1 2-3 1-1 6-1-1-2 3 0-3-2 1-1-5 4-5 4 1 2-2-3 0-6 2-1-3 2-1-3-1-3-6 5-12-4-4-8-3 4 1-4-4-6 0-4-6 2-1-5-10-1 0-4 6-2-7 2-2-1-2-11 6-1 2 2 3-3 3 1 6 8 5 2 8 3 4 4 2 6-2-2 4 10 3 2 3-1 3-2-2-5 0-4 6 3 2-1 3-9 9-3 1 6-8-1-7-4 0-1-4-3 2 1-2-3 1-1-4-5 1-10-7-5 0 1-1-5-4-2-10-13-4-4 1-7 6-22 10-23-7-9 4-2 3 4 9-11 5-12 2 2 1-3 1-5 7 6 7-5 1-1 5-6 0-2 3-15-4-6 1-10-10-10-2-2-9-3-3 1-2-1 2-1-1-1-16-6-18 5-4 4 3 32 10 3-2 0-21 6 7-7-10 2 0-2-7-7-6-1-5 3 0-6-2 1-2-3-2-10-2-2-2 2-2-1-1 2 0-3-1 0-2 9-4 4 4 10-2-3-13 4 0 1 4 8 0 5-2-2-1 1-2 11-6 5-12 18-7 10-1-9-1 9 0-3-1 2 0-2-2 6-7 4-7 15-5 12 2-1-1 2-3 8 0 5 4 1-5 6 1 7 4-13-9 3-2-3-2-1-6-5-2-1-7 5 1 5-1 0-2-7 1-2 0 1-2 19-3-1 8 6 2-5 1-1 2-5 3 1 2-2 1 6 4-1 2 11 2-1 4 5 1 9-3 4 1 14 10-7-6 5 3 21-1 8 6 2-3 3 0 1-4-1 4 3 2-5-15 2-4 3 1 7 7 2-1-1-7-4-2-2-6 8 1 11 4 0-2 10 1-9-6-24-2-9-8-6-13 15-7 3 0 0-3-4-3-12-2-5 1 1 2-1 1 2 2-3 2-16 2 3 10 12 9-5 0 4 1-1 1-12-1 5 3-1-1 2 12-2 3-10-1 0 4-10-3 0-2-5-5 2 0-1-1 1-1-16-15-2-4 2 0-5-2-2-3-3 4-5-2-14 5-12 0-9-4 1-2 6 0-4 0 5-3-11 2 0-2 15-5-15 5 0-3 4 0-4-1 4-2-4 1-1-2 21-1-20 0-1-1 3-1-3-1 14 0-13-2 23-2-10 0 6-2 8 2-4-2 3-1 20 1-12-1 11-4 9 0-5 0 5-2-1-1 7 0-5 0 0-2 13 0-6-2 2 0 5 1-6-2 2-1 5-1 2 2-1-2 8 1-6-2 9-3 4 1-2-1 3-1 3 0 0 2 4-3-2 4 4-1-1-2 8 1-4-3 8-1 4 3 8-7 7 1-5 5 9-5 1 0 0 3 2-1 4-4 4 1-3 2 3 0-1 3 4-4 13 3-4 2-9 0 5 3 11 0 3-2 6 2-5 0 1 2 7 0-2 3 3-2 13 1 31 10 2 4-1 2-6 4-9 2-25-4-16-4 17 8-2 4 4 7 15 4 3-2-9-5 2-2 18 4 4-1-4-6 14-7 12 4 2-7-4-2 2-7-5-3 15 2 5 4-11 3 10 4 7-1 1-4 6-1 0-1 19-5 2 2 2-1-2-1 9-3 4 0-4 1 1 3-4 1 9 1 4-3 10 0 11-3 2 2-1 2 3 1 1-3 7-2-5-4 4-2 20 2 26 9 4-5-4 0-5-4-5 0 3-8-4-1 0-2 10-4 8-9 19 2-2 5-4 4 5 3-1 14 7 4-4 5-10 5 1 2-5 1-2 0 2-1-10-1 6 3 12 1 11-5 6-5-3-5 5-3 8-1 4 4 0 5 11 1-8-1 0-3 2-1-2-4-10-3-13 1-2-5 5-5-7-6 11-5-1-5 5 2-2 8 2 1 20 2-15-4-3-2 13 0-4-2 6-2 19 5 9 0-5 3-1 5 0 1 3-3 2 0-2 4 2 1 4-3-3-4 2-4-16-5 0-4-2-2 0-2 38-2-6 3 5 2-4-2 9-3-9-3 7-1-8-2 7 0 3-2-3-1 42-5-7 0 3-2 19 2 13-3 7 2-2 1 2-2-6-3 17 1-4-1 0-3 18-5 12 2-11 2 20 2-7 2 29-1 9 2 0 3 4-2 3 3-2 2-6-2 7 3-4 3-34 10-13 6 34-7-7 0 4-2 7 0-2 0 1 1 5 1 5-1 3 4-2 4 3 1-3-2 4-3-2-2 3 0 27 0 3 1-3 1 7 2 17 1 7-2-2-3 7-1 28 4-3 2 4 1-5 1 5 1 0 2-10-2 7 5 2-1 2 1-4 0 6 4 7 3 10-8 6 3 15-1 11 3 2-1-2-1 1-1 11 1-4-4 5-1-6-1 11-2-1-2 33 3-12 2 15-1-4 2 0-1-2-1 0 2-5 1 1 1 13-4 13 1 3 2-6 1 10 1-3 2 8 0 4 2-2 0 4 1 20-2 17 1 7 3 0 6 6 1 3 5-3 2 4-2 0-4 10-2 22 2 6-2 11 6 5 0 3-2-5-3 2-4 33 2 24 6zM1144 189l-8 3-4 4-7 1-5 8 4 2 1 3 1-2-1 5 2 3 11 11 6 4-5 0-1 5-3 2 1 9 19 8 14 0-2-14-5-3 0-2 2 1 0-3-4 0 1 1-2-4 1-4 5 3 5-2-6-7-5 0 0 5-3-4 1-6-8-3-4-6-3-2 8 0-4-3 3-2 10 0-2-1 2-8-2-2-13 0zM746 54l6-1-3 2 2 0-1 2 3-1-1 2 5 0-1 2-7 6-21 8-15-4-9 1 0-2 7-2-3 1 2-2-14-2 13-1-4-1 4-2-16-1 7-1-3-1 2-2 6 2-3-2 3-1-4 0 2-1 9 3 0 2-2 0 3 3 2-2 2 0 2-4 4 3 1-3 3 0 4 3-1-3 5 1 6-1 1-3 4 2zM320 21l11 0 1-4-7-3 3-2 6 2-8-5 2-2 6 1-7-2 13-3 10-1 8 7-5 3 3-1-2 4 7-2-2-1 2-1 7 4-1-2 1-1 7 1-6-3 7-1 13 2 1 1-6 4 5-2 5 0-5 2 3 0-2 3 7-3-2 2 3-1 3 2-1-2 3-1 7 1 3 2-9 3 12-1-1 1-6 3 3 0-1 2 6-4 8 0 5 2-10 3 7-1-1 1 2 0 4-2 5 3-13 2 16 2-14 1 7 1 0 2-9-1 16 3-2 3 5-2-2 3 3-1 4 2 2-2 0 1 7 2-5 2 10 0-4 3 9-1 5 3-5 0 4 1-2 1-4-1 3 3-4 0 2 1-2 2-5-2-1 6-4-1 0-2-1 2-5-4 5-4-8 2 1-1-2 0-6-3-2 0 1 2-4-1 3 3-8-1 3 0 1 4 5 1-1 1 4 3 0-1 7 2 0 1 3 1-3 1 7 4-2 3-3-3 3 6-3-1 0 3-16-8 0 2-6-2 17 11-2 2-30-8-4-3 4-1-7-2-6-4 1-1-4 1-4-3-2 1 2 2-13 1-7-2-1-3 5-3 9 1 2 3-2-3 14-1-6-5 14-8-7-8-3 0 0-2-3 1-3-2 1-1-12 2 1-2 5-1-5-3 2-1-6 1 2-1-5-1-1-3-7-2-2 1 3 3-16-1 3 3-29-2-3-1 0-2-9 1-6-2-4-3 14 0-16-3 0-7 4-5 9-4 16 0-10 7 3 6 7 4-10 2zM423 -63l18 1-12 1 29-1 3 3 11 1-44 7 23-1-28 7-7-1 2 2-10 1 9 0-5 3-18-1 5 1 1 1-21 0 14 4-25-1 25 3-11 1 7 2-5 2-12 0 0 3-3 1-19-1 2 1-3 1 14 1 2 1 7 1-2 2-14 3-2-2-9-2 2 2-12-2-1 3-5 0-8-2-1 1-5-1 0 1-5 0-1-2 0 2-6 0 0-3 16-2-6-2-2-2 2-1 19 3 6 0 6-3-13 3-4-3 8-2-4-1 0-2-5 3-3 0 1-1-9 1 4-4 30-2-15 0 5 0-18-6 0-3 17 0 19 5-15-5 37-4-11-1 11-3-25 5-25 1-8-1 19-3-26 3-9-2 25-2-28 2-2-1 5-1-3 0 12-2-16 1 3-1-11 0 22-4 18 1-10-2 11-1 32 4-18-4 5-1-3 0 8 0-1-1 14 0-7-2 14 1 9 2 2-1-9-2 27 2-5-1 4-2 20 1zM274 16l8 3 0 3 9 5-5-1-1 1 3 1-5 2 14 2-4 1 4 3 0 3 2 1 5-7 8 3 1 4-3 0 0 2 6 6 5-2 5-9 5 0-2-1 2-2-3-1-1-4 19 2-3 1 9 2-4 2 4 1-7 2 7 7-1 3-11 4-7-4-4 1 6 1 2 4-17-3 4 3-9 6-14-5-9 0 26 6-7 7-6 1-5-1 1 1-2 0 0 2-4 1-17-4 1 2 17 4-1 2-9 1 2 2-3 0-2 2 2 1-4-2 2 1-4 2 1 2-9 9-1 10 4 2 0 3 1-3 6 0 4 10-2 3 13-3 30 12 3 1-1 2 8-2 9 1-1 12 4 3-1 1 6 1 1 2-3 2 5-2 5 2-2-2 3-2 2 2 2-2-2-1 4-3-3-8-4-4 12-3 8-7-2-8-10-7 5-7 2 1 0-3-2-1 0-5-3 0 4-5-3-2-1-3 5-2 16 3 6-2 6 2-1 2 4 0 0 2 3 0-1 1 2 2 9 2 3-1-1 6-6 1 6 1 0 4 2 0-1 3-4 1 11 0 0 4-4 2 6-4 0 2 1-2 1 3 8-6 2 3 0-3 4-1-2-1 1-2 3 0-3-2 3 0 1-4 2 0-2 2 3 0 3 3-1 1 4 2-4 1 5 0 2 2-4 3 5-1-4 3 5-1 3 2 0 2-3 1 7 3 0 2-7-1 6 3-1 1 2 0-1 2 7 2 1 2-3 3 5-2 2 1-2 2 3-2 3 2 9 2-18 6 1 2-1 1 14-6-2 0 6 0 1 2-2 2 1 1 5-2 3 2 1 5-3 1 4 1-2 0 2 2-8 5-9 1-9 7-9 1-26-5-4 4-5 0-6 4-9-3 8 4-4 5-26 8 3 2-6 2 9-2 3-4 18-5 11-7 15-1 6 3 1 4-4 1-8-2 11 5-3 3 10 11 6 2 2-1 4 5-11 2 0 2-3-1-2 5-3 2-2-3-1-6 7-4 2 3 3-2-7-2 2-3-2-1 0 2-5 2-1-1-1 2-4-2 0 4-4 2-2-2-1 2-1-3-2 5-6 1-3 8 1 2-3 3 5 6 3 0-1-3 1 4-5 1 0-1-3 2-2-3-1 4-11 1-9 6 0-6 0 4-3 5 3 1 0 2-5 10-5 5 0-2-6-4 1-3 4-2-6 4 5 13-8 12 2-8-2 0 0-4-4 0 0-2 3 0-3-1 1-2-1-1 4-6-7 3 2 9-3-1 4 4-9-3 2-5-3 5 10 5-2 2-6-5 8 6-1 2-3-2 4 4-9-2 8 4 4 0 4 8-4-6 2 4-3-1-4 2-1-2 0 2 5 0 0 2 3-1-3 4-8-2 5 2-4 2 4 1-7 0-4 5 0-1-1 1-6 1-6 5-5 0 1 2-2-1 1 1-2 1-2 6 12 21 0 7-2 4-4 0-4-10-2 1 0-2-1 0-3-4 2-2-3 0 0-6-7-6-3-2-6 2-2-4-4-2-9 1-1-3 0 2-12-1 1 2 4 0-1 3 4 3-1 1-6-4 0 3-4 0-6-5-3 2-9-1 0-2 0 2-6 2 2-1-3-1 1 2-6 6-5-1 1 2-4 2-2 6-2-1 4 10-4 24 3 7 0 2-3-5 1 3 10 19 5 1 4 4 12-4 6 2 1-1-1-2 5-3 2-12 11-4 9 0 1 4-5 10 1 0-2 9-1-4-2 3 1 1-1 12-3 5 4 1 19-2 10 5 1 7-4 21 11 16 1 0 0-1 5 2 9-5 2 0 8 4 6 7-1-4 8-6 1-8 4-4 3 1 0 2 1-4 5 0 10-8 3 3-5 3 2 6-3 6 3 6 3-1 1-4-3-9 10-3-3-3 2-2 2 5 8 2 1 5 12-1 6 4 9-4-4 0 15-1-6 1 1 4 1-1 1 3 2-2 2 3 0-2 5 3-2 6-3 0 2 1 7-1 8 6 2 3-1 6 2-3 2 0 5 5 0 4 1-3 7 2 0-2 9 1 2 0-1 3 2-2 6 2 5 8 1-2 1 4 1-2 2 1 3 14 4 3 1 4-9 9-4 9-4 1 4 0 7-4 3 7 6-2-2 7 3-6 5-3 1-5 5-1 11 5 1 3 2-2 2 2-1 4 3 1-2 5 3-5 0 3 5-3 11 3 9 0 17 14 10 2 4 13-3 16-12 14-5 11-4 0-2 34-3 4-1 9-7 12 0 5-4 2-2 5-6 0-1-2 0 2-9 0 1 2-6 4-8 3-8 8-3 0 2 1-2 5-1 16-5 6-8 13-6 6 9-12-5-3 0 5-4 5-4 12-9 11-12 1-6-3-4 0-4-5 2-9-2 13 8 8-1 3 4 4 0 4-5 8-4 2-18 4-7-1 2 4-2 10-8 2-7-3-2 1 1 9 3 2 4-2 1 4-2 1-3-2-3 1 4 2-6 4-2 10-8 2-4 5 5 7 6 1 0 3-2 2 2 1-10 7-2 7-3 1-2-3-2 2 3 1-5 6 2 4-3 0 3 1 4 4-5-1-10 4-1 7-2 1-6-4 2 0 1 1 4-4-8 4-3-1 2-4 7-1-7 0-3 4-3-2 3-3-5 1-2-3 9-1 1 3 1-1 0-4-4-2 3 3-5 1-4-2 1-3-5-2-2-2 3 0 0-2 5 4 1-4-2 3-1-2 1 0-4-3 4-1-2-3 3 0-2-1 1-3-2 3 0-6 2-1-3 0-1-3 8 1-2-3-3 2-3-2 3-1-2-1 2-2-1-2-4-1 0-1-3 1 0 2-1-2 4-4 0-2 5-1 1-2 0 4-2 2 4-3-1 5 1-8 4 0-2-2 4-4-4-3 3-13 3 1-3-4 3-3-7 3-3-5 5-13-3-14 3-1 6-14 4-17-1-14 2-7-1-6 5-18 0-21 3-13-1-21-7-8-22-13-5-6-2-5 1-3-9-15-7-19-7-13-7-5 2-3-3-6 10-15-1-4-3 5-4-4 1-7 3-4-1-1 3-4-1-4 8-3-1-3 3-1-1-4 5-3 5-8-3-2 1-17-7-10 2-3 2 2-10-6-6 6 3 4-5 2-1-4-2 2-2-4-6-1-1 2-3-5 0 2-2 0 0-5-10-8 3 3-1 2-4-2 0-9-12-12 2-1-1-2-6 1-17-6-18-16 2 2-5-3 0 2-10 3-26-10-7-6-9-2-12-12-1-3 2-1-1-2 2-4-4-8-10-13-3-1-2-4 2 1-6-3 1-2-3 1 0-7-14-14-2-13-9-2-1 11 7 8 4 10 2 0 5 16 2 1 0-1 5 6-3 4-2-5-10-9-2-9-4-4-3 2-7-5 6 0 1-5-8-5-8-23-7-3-1-3-22-5 0-7-13-15 1-6-5-4 0-6 3 3-2-5 8-2-8 0-1 3-4-1 1-2-5-5 0-7-2-4 4-8-1-7 5-9 1-9 5 0-5-1 2-4-2 0-3-9 11 2 1 2-3 3 4-4-1 4-2 1 2 0 3-5-3-3 1-2-4-3 2-2-3 1 1-3-2 2-3-1 0-1 2 0-1 0 0-3-2 2-3-1-2-3 1-3-1 2-7 1-2-1 4-1-4 0 0-2-3 1-4-2 1-3 5-1-6 2-1-2 0-3 2-1 5 2-3-3 1-3-7 7-1-2 2-3-2 1 2-3-2 0-5-5 2-1 5 3-4-2 1-2-3 0-3 4-5-3 4-4-5-1 6-7-2-1-1 4 0-6 0 4-3 4-3-3 2-1-2-6-7 4 4-4-12-7-1-4 3 1-2-2 2 0-5-2 1-3-2 2-3-1-4-7 1 8-4-1 0-3-2-1 0 2-5-2 6 4-4 1-19-9 2-3 1 3 2-2-3-1-6 2-5-1 0-2-17 1-4-2 1-3-3 2-4 0 1-2-5 0-1-2 2-1-9 2 0-3-4 3 1 1-2 2 4 0-3 3-5-1-2 3-12 4-1-2 5-2-5 0 3-7 5-2 9 1-6-2 2-2-20 8 2 2-9 6 4 3-4 4-14 5-1 3-10 4-1 2-16 5-2-1-3 3-4-1 0 2-4 1 0-2 10-5 8 0-1-1 1-2 17-9-1-3 3-1-2-2 4-5-8 4-2-2 3-1-5 0-1 4-8-4-11 2 3-3-2 0 1-3-4-5 3-3-4 3 1 2-8 1-9-5 3-2 7 2 1-1-2-1 1 0-9-1 2-1-4 0-4-4 6-5 2 0 0-3 3-3 6 2 6-4 8-1 0-4-3-1 4-3-6 0-5 3-3-2 0 2-18-1-5-4 5-1-12-3 22-6 5 0-2 2 2 1 16 0-6-2-3-3 1-1 4 4 9 0-10-2 1-2-11-1-4-3-16-6 3 0 1-3 14-1 12-9 10-2 2 2 3-2-4 0 2-2 11 0 8-4 6 2-3 2 5-2 6 2 11 0-1 1 3 2 16-1 28 4 9-1 47 10-3-3 9-4 3 1-2 2 21-6 7 0-19 6-5 3 2 1 8-5 5 0 0 2 5-4 8-2-2 1 2 1 7-4-3-1 1-1 15 9 6-6 2 3-1 2 14-3 29 7 13 0 6 3-7 2-2 2 2 0 16 1 15-2 12 5-3 1 7 5-2-4 3 1-5-7 14-5-16 3-2-1 2-2 13-2 10 6 6-1 7 3 20 0 4-1-2-2 7 4 2-2-6 0-3-4 5-1 8 2-1 2 4-2-2 5 5 4-6 0 4 3-1-3 4 0 0-2-2-3 1-2 12-4-2-3-5 1 3-2-1-1 5-1-15-3-3-3 4-3-3 0-1-3 6-1 1-1-3-1 4-2 5 1zM348 77l-6 6-4 0-1-2 3-3 8-1zM279 -7l0 2-6 1-13-3 11-4 6 1 2 3zM181 -33l3 2-1 1-23 0 21-3zM208 8l-10-5 9-1 5 1 0 2-4 3zM240 0l17 1-3 2 2 1-7 3 12 2 0 2-2 1 1 3-5 2-5-2 1 3-6 0-9-5-12-4 3-3 5 3 7-1-2-2 4 0-10-2 6 0-3-3 6-1zM330 61l3-1 15 5 2 4-1 1 6-1 3 2-4 3-14-5-12 7-3-4-8 1 5-4 0-3 3-9 4 0 1 4zM386 40l4 1-1 5-12 0-1-2 4-4 6 0zM363 2l14 2 6 4-22 0-6-3 0-3 8 0zM254 -17l1 2-2 3 3 2-3 0 1 2-2 1-14 0-1-1 2-1-3-1 9-2-22 1 4-2 7 0-7-3 2-1 12 4-2-2 4 0-8-3 12 1 1-2 6 2zM219 -37l6 3 5-2 10 3 6 5-6 1-6-2-23-1 0-2 9-1-5 0 2-1-2-1-4 1 1-1-5 0 0-2 12 0zM289 -50l7 4 9 0 2 3 4 0-2-2 5 0-2 2 6 2-2 2 10 0 4 2-16 4-2-2-2 2 2 1-4 0-1 3-7-3 3 3-19-2 5-1-9 0-2-1 3 0-6-2 17-3-23 1-3-2 8-1-9 0-6-3 15 0-12-1 5-1-4-1 1-1 12 1-9-2 13-2-5-1 14 1zM274 -20l7 1-2 2 13-2 5 2-5 0 12 1-12 0 12 3-2 2 5 1 1-2 16 2 12-3 11 0 15 3 1 1-5 2 6 1-16 3-9-3 0 2-6 0-24 1 0-3-6 2-8-2-4 1-5-4 1-4-6-3-13 0-4-1 2-1-7-1 6-2 9 1zM263 -32l7 1-2 1 2 1-12 2-4-2 4 0-6-1-2-3 13 1zM177 -29l5 1-7 1 4 1-3 2-10 0-5-1-1-2 17-2zM147 -24l-5 2 3 1-3 1 2 1-7 3-5-1 1-3-6 2 1 1-2 2-3-1 0 2-2 1-3 0-3-2-9 1-3-1 22-8 16-2 6 1zM190 -14l9 2 1-2 6 0 1 2-3 4-17 1-22 4-11-2 19-4-15 2-1-2 2-1-3 0-3 2-7 1-12-2 15-3-12 0 13-1-10-1 11-1-6-1 5-1 14 2 10 4 11 0 1-1-5-1 2-2-5-2 9-3 2 1 1 5zM281 -1l17 2-11 8-12 0 4 2-3 3-7 0-3-12 6 0-3-1 1-1 11-1zM255 31l13 5-8 3-17-3 0-2 6-1 0-2 3 1-1-3 4 2zM153 10l10-3 9 2-2 3 9-3-3-2 4 0 7 3 6 7 3-2-5-9 1-1 9 1 7 2 6 9-1 4 20 6 2 2-16 1 3 2-1 2 6-2 2 2-6 2-14 0-9-4-5 3-12 2-22 2-3-5-17-2-4-4 33-2-13-3-23 1-4-3 18-3-16 0-1 0 3-2-8 0 5-4-1-2 11-3 13-2 2 2-3 3zM122 -1l13-1 13 5-22 7-7 3-3 4-15 3-5-4-11-2 12-12-5-4 19-2 11 3zM507 157l-3 2 1 2-6 10 4-4 4 1-4 3 6 0-1 3 5-3 5 2-3 3 3 1-3 2 7-1-5 4 1 2 5-3-2 4 2-1 1 1-3 6-3 1 0-4-3 2 2-4-2-3-2 3-8 4 6-6-4 2-4-1 2-2-6 2-14-1 5-6-5 0 3 0 2-4 2 1-1-3 2 0-1-2 6-9 6-4 3 0zM660 -67l25 2-37 2 41-1 4 2 17 1-9 3-40 2 28 0 5 2 18-2 1 3-12 6 21-6 13 1 8-2 12-1 16 3-32 6 5 1-3 1-18 0-4 2 1 2 4 0 0 3 2 1-13 3-3 7 5-1 8 1-7 1 1 1 12 1 1 3-26 1 17 4 3 5-1 2-16 0 7 0 1 4 5-3 4 5-11 1-5-1 0-2-2 4 12 1-2 3-10 1-19-4 4 2-7 2-8-1 5 1-6 1 20-2 13 4-2 5-10-2-4-4-12 2 11-1 1 2-3 2 19 4-3 2 4 0 2 6-5 1-1-3-1 3-4 0-7-6-16-2 8 1 1 2-16 1 2 2-6 2 14 0-5 2 1 1 11-2 19 2-9 2-16 7-27 5-8-3 1 3-6 3-9 8-3 1-4-1 1 2-13 4-1-1 4-4-5-1 2 1-2 3-2-1 2 2-12 1 3 2-9 2 6 4-8 1 5 1 1 3-5 5-5-1 3 1-1 2-7 0 5 1 0 5-3 1 2 1-4 7-6 0 5 1 0 3-5 0 2 1-1 0-3 0 1-3-3 2-4-1 3-4-3 2-4-1 1-5-6 3-8 1 2-2-3 0-6-4 0-2 3-2-5 1 1-2-5-1 3-4-3 1-7-8 7-1-8 0 6-4 4 2-1-2-5-3 2 2-4 1-4 3-3-7 8-3-8 2-4-1 0-3-1 0 13-6-15 5 1-4 7-1-8-1-1-3 8-2 11 1-3-1 1-1-8 0-8 2 3-4 9 1 3-3-13 1 2-2 11 0 2-2-2 1 0-3 5 0-4 0 4-6-12 0-13-5 10 0 13 2-7-4 5 0-12-1 1-2 6-2-10 1 2-2-3-4-2 1 3 3-3 3-10-1 5-6-4 2 1-1-2-1 6-3-6-1 2-2-5-2 2-1-2-3-6 0 5-3-13-5 1-2-1-1-29-4-22 1 1 1-9-1-7-2 8-2-18-3 29-1 0-2-18 1-7-2 2-1-16-2 7-3 35-4 6-6 4-1-16 0-2-1 1-1 15-4 9 1-1-2 1 0 9 0 2-2 0-2 4-1 23 3-16-4 29-2 5 1 1 3 3-1 0-3 21 3-9-4 6 0 32 5 2-5-7-2 25 0-29-1-2-1 2 0 29-1 6-1 13 2 1-1-4-2 6 0 46-1z";
+const DIS=[{n:"Xanh",u:"var(--u0)"},{n:"Vàng",u:"var(--u1)"},{n:"Đen",u:"var(--u2)"},{n:"Đỏ",u:"var(--u3)"}];
+const ROLES={
+  medic:{n:"Bác sĩ",i:"🩺",c:"#ff8c2a",d:"Chữa bệnh: bỏ <b>hết</b> khối cùng màu thay vì 1 khối. Bệnh đã có thuốc: tự động dọn sạch khối màu đó ở nơi mình đứng hoặc đi qua (kể cả ngoài lượt), và không cho khối màu đó xuất hiện ở đó."},
+  sci:{n:"Nhà khoa học",i:"🔬",c:"#f2f4f8",d:"Chỉ cần <b>4</b> thẻ cùng màu (thay vì 5) để bào chế thuốc giải."},
+  res:{n:"Nhà nghiên cứu",i:"📚",c:"#c08a52",d:"Khi trao đổi kiến thức có thể đưa <b>bất kỳ</b> thẻ thành phố nào (không cần trùng nơi đang đứng). Người khác cũng có thể lấy bất kỳ thẻ thành phố nào của bạn — nhưng vẫn phải đứng cùng thành phố."},
+  ops:{n:"Chuyên gia vận hành",i:"🏗️",c:"#8ee04f",d:"Xây trạm nghiên cứu <b>không cần thẻ</b>. Mỗi lượt 1 lần: từ một trạm nghiên cứu bay tới bất kỳ đâu bằng cách bỏ 1 thẻ thành phố bất kỳ."},
+  disp:{n:"Điều phối viên",i:"📡",c:"#e45be0",d:"Di chuyển quân của đồng đội như quân của mình (bay thì dùng thẻ của bạn). Hành động: đưa 1 quân bất kỳ tới thành phố đang có quân khác."},
+  qs:{n:"Chuyên gia cách ly",i:"🛡️",c:"#2fae62",d:"Ngăn mọi khối dịch (kể cả do bùng phát) xuất hiện ở thành phố mình đứng và <b>các thành phố kề bên</b>."},
+  cp:{n:"Nhà hoạch định",i:"📋",c:"#35c9d8",d:"Hành động: lấy 1 thẻ Sự kiện từ chồng bỏ cất lên thẻ vai trò (tối đa 1, không tính vào giới hạn 7 thẻ). Khi dùng, thẻ đó bị loại khỏi trò chơi."},
+};
+const EV={
+  100:{k:"airlift",n:"Không vận",i:"🚁",d:"Di chuyển 1 quân bất kỳ tới thành phố bất kỳ."},
+  101:{k:"forecast",n:"Dự báo",i:"🔮",d:"Xem 6 thẻ trên cùng của chồng Lây nhiễm và sắp xếp lại thứ tự tuỳ ý."},
+  102:{k:"grant",n:"Tài trợ chính phủ",i:"🏛️",d:"Xây 1 trạm nghiên cứu ở thành phố bất kỳ, không cần thẻ."},
+  103:{k:"quiet",n:"Một đêm yên bình",i:"🌙",d:"Bỏ qua bước Lây nhiễm tiếp theo (không lật thẻ Lây nhiễm nào)."},
+  104:{k:"rp",n:"Cộng đồng kiên cường",i:"💪",d:"Loại vĩnh viễn 1 thẻ khỏi chồng bỏ Lây nhiễm. Dùng được cả giữa bước Lây nhiễm và Tăng cường của Bùng dịch."},
+};
+const DIFF={4:"Nhập môn",5:"Tiêu chuẩn",6:"Anh hùng"};
+const RATES=[2,2,2,3,3,4,4], HANDMAX=7, MAXST=6, MAXOB=8, CUBES=24, NC=CITY.length;
+const range=n=>Array.from({length:n},(_,i)=>i);
+const KEY={}; CITY.forEach((c,i)=>KEY[c[0]]=i);
+const ATL=KEY.atl;
+const EDGE_LIST=EDGES.split(" ").map(e=>e.split("-").map(k=>KEY[k]));
+const ADJ=range(NC).map(()=>[]); EDGE_LIST.forEach(([a,b])=>{ ADJ[a].push(b); ADJ[b].push(a); });
+const cname=c=>CITY[c][1], ccol=c=>CITY[c][2];
+const isCity=c=>Number.isInteger(c)&&c>=0&&c<NC, isEv=c=>!!EV[c], isEpi=c=>c>=200;
+const cardName=c=>isCity(c)?cname(c):isEv(c)?EV[c].n:"Bùng dịch";
+const fmtPop=x=>x.toLocaleString("vi-VN",{maximumFractionDigits:1})+" triệu dân";
+
+function rnd(n){ const a=new Uint32Array(1); crypto.getRandomValues(a); return a[0]%n; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=rnd(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ================= ENGINE ================= */
+// Chồng bài lưu dạng mảng: phần tử cuối là lá trên cùng, phần tử đầu là lá dưới đáy.
+function newGame(names, diff, games, roleNames){
+  const n=names.length;
+  const roles=shuffle(Object.keys(ROLES)).slice(0,n);
+  const st={n, names:roleNames?roles.map(r=>ROLES[r].n):names.slice(), diff, roles, roleNames:!!roleNames,
+    loc:Array(n).fill(ATL), hands:[], cubes:CITY.map(()=>[0,0,0,0]), supply:[CUBES,CUBES,CUBES,CUBES], cured:[0,0,0,0],
+    stations:[ATL], outbreaks:0, rate:0, pdeck:[], pdisc:[], ideck:shuffle(range(NC)), idisc:[], iout:[], evout:[], cp:null,
+    cur:0, acts:4, opsUsed:false, phase:"setup", pending:null, drawQ:[], quiet:false, won:null, why:"", epis:0,
+    log:[], fx:[], fxN:0, turn:1, moveNo:0, games:games||1, lastDraw:null, lastInfect:null, _undo:[],
+    stats:{start:Date.now(), end:0, treated:0}};
+  log(st,`— Ván mới · ${n} nhân vật · ${DIFF[diff]} (${diff} thẻ Bùng dịch) —`,"sys");
+  const init=[];
+  [3,3,3,2,2,2,1,1,1].forEach(k=>{ const c=st.ideck.pop(); place(st,c,ccol(c),k,new Set()); st.idisc.push(c); init.push(`${cname(c)} ×${k}`); });
+  log(st,`🦠 Lây nhiễm ban đầu: ${init.join(", ")}.`);
+  const cards=shuffle(range(NC).concat(Object.keys(EV).map(Number)));
+  const per={1:4,2:4,3:3,4:2}[n];
+  st.hands=range(n).map(()=>cards.splice(0,per));
+  const piles=range(diff).map(()=>[]);
+  cards.forEach((c,i)=>piles[i%diff].push(c));
+  piles.forEach((p,i)=>{ p.push(200+i); shuffle(p); });
+  piles.sort((a,b)=>a.length-b.length);                       // phần nhỏ nằm dưới đáy
+  st.pdeck=[].concat(...piles);
+  let best=-1;
+  st.hands.forEach((h,p)=>h.forEach(c=>{ if(isCity(c)&&CITY[c][5]>best){ best=CITY[c][5]; st.cur=p; } }));
+  st.phase="actions";
+  log(st,`— Lượt 1: ${who(st,st.cur)} đi trước (giữ thành phố đông dân nhất) —`,"sys");
+  return st;
+}
+function log(st,t,k=""){ st.log.push({t,k}); if(st.log.length>400) st.log.splice(0,st.log.length-400); }
+function fx(st,e){ e.id=++st.fxN; st.fx.push(e); if(st.fx.length>60) st.fx.shift(); }
+function who(st,p){ return st.roleNames ? `${ROLES[st.roles[p]].i} ${st.names[p]}` : `${st.names[p]} (${ROLES[st.roles[p]].n})`; }
+
+function blocker(st,c,col){
+  if(st.cured[col]===2) return "erad";
+  if(st.phase==="setup") return null;
+  for(let p=0;p<st.n;p++){
+    const r=st.roles[p], l=st.loc[p];
+    if(r==="qs" && (l===c || ADJ[l].includes(c))) return "qs";
+    if(r==="medic" && l===c && st.cured[col]) return "medic";
+  }
+  return null;
+}
+function place(st,c,col,n,ob){
+  if(st.won!==null) return;
+  const b=blocker(st,c,col);
+  if(b){
+    if(b!=="erad"){ log(st,`${b==="qs"?"🛡️ Chuyên gia cách ly":"🩺 Bác sĩ"} chặn dịch ${DIS[col].n} ở ${cname(c)}.`,"good"); fx(st,{t:"block",c,col}); }
+    return;
+  }
+  let added=0;
+  for(let i=0;i<n;i++){
+    if(st.cubes[c][col]>=3){ if(added) fx(st,{t:"inf",c,col,n:added}); outbreak(st,c,col,ob); return; }
+    if(st.supply[col]<=0){ lose(st,`Hết khối dịch ${DIS[col].n} trong kho — dịch bệnh đã lan khắp thế giới.`); return; }
+    st.cubes[c][col]++; st.supply[col]--; added++;
+  }
+  if(added) fx(st,{t:"inf",c,col,n:added});
+}
+function outbreak(st,c,col,ob){
+  if(ob.has(c)) return;                                       // mỗi thành phố chỉ bùng phát 1 lần trong một chuỗi
+  ob.add(c); st.outbreaks++;
+  log(st,`💥 BÙNG PHÁT ở ${cname(c)} (${DIS[col].n}) — lần ${st.outbreaks}/${MAXOB}.`,"bad");
+  fx(st,{t:"ob",c,col});
+  if(st.outbreaks>=MAXOB){ lose(st,`${MAXOB} lần bùng phát — thế giới chìm trong hoảng loạn.`); return; }
+  for(const d of ADJ[c]){ place(st,d,col,1,ob); if(st.won!==null) return; }
+}
+function lose(st,why){
+  if(st.won!==null) return;
+  st.won=false; st.phase="end"; st.why=why; st.pending=null; st.stats.end=Date.now();
+  log(st,`💀 CẢ ĐỘI THUA: ${why}`,"bad"); fx(st,{t:"lose"});
+}
+function win(st){
+  st.won=true; st.phase="end"; st.why="Đã bào chế đủ thuốc giải cho cả 4 dịch bệnh!"; st.pending=null; st.stats.end=Date.now();
+  log(st,"🏆 CẢ ĐỘI CHIẾN THẮNG — nhân loại được cứu!","good"); fx(st,{t:"win"});
+}
+function checkErad(st,col){
+  if(st.cured[col]===1 && st.cubes.every(x=>!x[col])){
+    st.cured[col]=2; log(st,`🌟 Bệnh ${DIS[col].n} đã bị XOÁ SỔ — thẻ Lây nhiễm màu này hết tác dụng.`,"good"); fx(st,{t:"erad",col});
+  }
+}
+function medicSweep(st,p){
+  const c=st.loc[p];
+  for(let col=0;col<4;col++) if(st.cured[col] && st.cubes[c][col]){
+    const k=st.cubes[c][col]; st.cubes[c][col]=0; st.supply[col]+=k; st.stats.treated+=k;
+    log(st,`🩺 ${who(st,p)} tự động dọn ${k} khối ${DIS[col].n} ở ${cname(c)}.`,"good"); fx(st,{t:"treat",c,col});
+    checkErad(st,col);
+  }
+}
+function setLoc(st,p,c){ st.loc[p]=c; if(st.roles[p]==="medic") medicSweep(st,p); }
+function discardCard(st,s,c){ const h=st.hands[s]; h.splice(h.indexOf(c),1); st.pdisc.push(c); }
+function overLimit(st){
+  if(st.pending || st.phase==="end" || st.phase==="draw") return -1;
+  for(let p=0;p<st.n;p++) if(st.hands[p].length>HANDMAX) return p;
+  return -1;
+}
+// đường ngắn nhất bằng đi bộ + bay con thoi
+function pathTo(st,from,to){
+  if(from===to) return [];
+  const prev=Array(NC).fill(-1), seen=Array(NC).fill(false); seen[from]=true;
+  const q=[from];
+  while(q.length){
+    const c=q.shift();
+    const nb=ADJ[c].concat(st.stations.includes(c)?st.stations:[]);
+    for(const d of nb) if(!seen[d]){
+      seen[d]=true; prev[d]=c;
+      if(d===to){ const path=[]; for(let x=to;x!==from;x=prev[x]) path.unshift(x); return path; }
+      q.push(d);
+    }
+  }
+  return null;
+}
+function rpHolder(st){
+  for(let p=0;p<st.n;p++) if(st.hands[p].includes(104) || (st.roles[p]==="cp"&&st.cp===104)) return p;
+  return -1;
+}
+
+function applyAction(st,s,a){
+  if(!a || typeof a!=="object") return "Hành động lạ.";
+  if(st.phase==="end") return "Ván đã kết thúc.";
+  if(!(s>=0 && s<st.n)) return "Nhân vật không hợp lệ.";
+  const err=act(st,s,a);
+  if(!err) st.moveNo++;
+  return err;
+}
+function act(st,s,a){
+  const lim=overLimit(st);
+  if(a.k==="event"){ if(lim>=0 && lim!==s) return `Chờ ${st.names[lim]} bỏ bớt thẻ đã.`; return playEvent(st,s,a); }
+  if(a.k==="discard") return discardAct(st,s,a);
+  if(a.k==="fcdone") return forecastDone(st,s,a);
+  if(a.k==="epigo"){
+    if(!st.pending || st.pending.type!=="epi") return "Không có gì để tiếp tục.";
+    if(s!==st.cur) return "Người đang tới lượt sẽ bấm tiếp tục.";
+    st.pending=null; intensify(st); continueDraw(st); return;
+  }
+  if(st.pending) return st.pending.type==="forecast" ? `Chờ ${st.names[st.pending.s]} sắp xếp Dự báo.` : "Đang chờ xử lý Bùng dịch.";
+  if(lim>=0) return `Chờ ${st.names[lim]} bỏ bớt thẻ (tối đa ${HANDMAX}).`;
+  if(s!==st.cur) return "Chưa tới lượt của bạn.";
+  if(a.k==="infect"){ if(st.phase!=="infect") return "Chưa tới bước lây nhiễm."; infectStep(st); return; }
+  if(st.phase!=="actions") return "Đã qua giai đoạn hành động.";
+  if(a.k==="draw") return drawStep(st);
+  if(a.k==="undo"){
+    if(!st._undo.length) return "Không còn gì để hoàn tác.";
+    const keep={log:st.log, fx:st.fx, fxN:st.fxN, moveNo:st.moveNo, _undo:st._undo};
+    Object.assign(st, JSON.parse(st._undo.pop()), keep);
+    log(st,`↩️ ${who(st,s)} hoàn tác 1 hành động.`); return;
+  }
+  if(st.acts<=0) return "Đã dùng hết 4 hành động — hãy rút thẻ.";
+  const snap=JSON.stringify(Object.assign({},st,{log:undefined,fx:undefined,fxN:undefined,_undo:undefined,moveNo:undefined}));
+  const r=turnAction(st,s,a);
+  if(typeof r==="string") return r;
+  st.acts-=r; st._undo.push(snap);
+  if(st.cured.every(x=>x)) win(st);
+}
+function turnAction(st,s,a){
+  const role=st.roles[s], hand=st.hands[s], here=st.loc[s];
+  const pawn = a.p==null ? s : +a.p;
+  if(!(pawn>=0 && pawn<st.n)) return "Quân không hợp lệ.";
+  if(pawn!==s && role!=="disp") return "Chỉ Điều phối viên mới di chuyển được quân của người khác.";
+  const at=st.loc[pawn], to=+a.to;
+  const mover = pawn===s ? who(st,s) : `${who(st,s)} đưa ${st.names[pawn]}`;
+  const moved=()=>fx(st,{t:"move",c:st.loc[pawn],p:pawn});
+  switch(a.k){
+    case "walk": {
+      if(!isCity(to) || to===at) return "Điểm đến không hợp lệ.";
+      const path=pathTo(st,at,to);
+      if(!path) return "Không có đường tới đó.";
+      if(path.length>st.acts) return `Cần ${path.length} hành động, chỉ còn ${st.acts}.`;
+      path.forEach(c=>setLoc(st,pawn,c));
+      const shuttle=path.length===1 && !ADJ[at].includes(to);
+      log(st,`${shuttle?"🔁":"🚗"} ${mover} ${shuttle?"bay con thoi":"đi"} tới ${cname(to)}${path.length>1?` (${path.length} chặng)`:""}.`);
+      moved(); return path.length;
+    }
+    case "direct": {
+      const card=+a.card;
+      if(!isCity(card) || !hand.includes(card)) return "Không có thẻ này.";
+      if(card===at) return "Đang ở thành phố này rồi.";
+      discardCard(st,s,card); setLoc(st,pawn,card);
+      log(st,`✈️ ${mover} bay thẳng tới ${cname(card)}.`); moved(); return 1;
+    }
+    case "charter": {
+      if(!hand.includes(at)) return `Cần thẻ ${cname(at)} để thuê chuyên cơ.`;
+      if(!isCity(to) || to===at) return "Điểm đến không hợp lệ.";
+      discardCard(st,s,at); setLoc(st,pawn,to);
+      log(st,`🛩️ ${mover} thuê chuyên cơ từ ${cname(at)} tới ${cname(to)}.`); moved(); return 1;
+    }
+    case "opsfly": {
+      if(role!=="ops" || pawn!==s) return "Chỉ Chuyên gia vận hành.";
+      if(st.opsUsed) return "Mỗi lượt chỉ bay từ trạm 1 lần.";
+      if(!st.stations.includes(at)) return "Phải đứng ở trạm nghiên cứu.";
+      const card=+a.card;
+      if(!isCity(card) || !hand.includes(card)) return "Chọn 1 thẻ thành phố để bỏ.";
+      if(!isCity(to) || to===at) return "Điểm đến không hợp lệ.";
+      discardCard(st,s,card); st.opsUsed=true; setLoc(st,s,to);
+      log(st,`⚙️ ${mover} bay từ trạm tới ${cname(to)} (bỏ thẻ ${cname(card)}).`); moved(); return 1;
+    }
+    case "dispatch": {
+      if(role!=="disp") return "Chỉ Điều phối viên.";
+      if(!isCity(to) || to===at) return "Điểm đến không hợp lệ.";
+      if(!st.loc.some((l,q)=>q!==pawn && l===to)) return "Thành phố đích phải có quân khác.";
+      setLoc(st,pawn,to);
+      log(st,`📡 ${who(st,s)} điều ${pawn===s?"mình":st.names[pawn]} tới ${cname(to)}.`); moved(); return 1;
+    }
+    case "treat": {
+      const col=+a.col;
+      if(!(col>=0&&col<4) || !st.cubes[here][col]) return "Không có khối màu này ở đây.";
+      const k=(st.cured[col]||role==="medic") ? st.cubes[here][col] : 1;
+      st.cubes[here][col]-=k; st.supply[col]+=k; st.stats.treated+=k;
+      log(st,`💉 ${who(st,s)} chữa ${k} khối ${DIS[col].n} ở ${cname(here)}.`); fx(st,{t:"treat",c:here,col});
+      checkErad(st,col); return 1;
+    }
+    case "build": {
+      if(st.stations.includes(here)) return "Đã có trạm ở đây.";
+      if(role!=="ops" && !hand.includes(here)) return `Cần thẻ ${cname(here)} để xây trạm.`;
+      let rm=null;
+      if(st.stations.length>=MAXST){ rm=+a.rm; if(!st.stations.includes(rm)) return "Đã đủ 6 trạm — chọn 1 trạm để dời đi."; }
+      if(role!=="ops") discardCard(st,s,here);
+      if(rm!==null) st.stations.splice(st.stations.indexOf(rm),1);
+      st.stations.push(here);
+      log(st,`🏥 ${who(st,s)} xây trạm nghiên cứu ở ${cname(here)}${rm!==null?` (dời trạm từ ${cname(rm)})`:""}.`); fx(st,{t:"build",c:here});
+      return 1;
+    }
+    case "share": {
+      const from=+a.from, tp=+a.to, card=+a.card;
+      if(from!==s && tp!==s) return "Bạn phải là người đưa hoặc nhận.";
+      if(from===tp || !(from>=0&&from<st.n) || !(tp>=0&&tp<st.n)) return "Người chơi không hợp lệ.";
+      if(st.loc[from]!==st.loc[tp]) return "Hai người phải đứng cùng một thành phố.";
+      if(!isCity(card) || !st.hands[from].includes(card)) return "Không có thẻ này.";
+      if(card!==st.loc[from] && st.roles[from]!=="res") return "Chỉ trao được thẻ trùng với thành phố đang đứng.";
+      st.hands[from].splice(st.hands[from].indexOf(card),1); st.hands[tp].push(card);
+      log(st,`🤝 ${st.names[from]} trao thẻ ${cname(card)} cho ${st.names[tp]}.`); fx(st,{t:"share",c:st.loc[from]});
+      return 1;
+    }
+    case "cure": {
+      const col=+a.col;
+      if(!(col>=0&&col<4)) return "Màu không hợp lệ.";
+      if(st.cured[col]) return "Bệnh này đã có thuốc.";
+      if(!st.stations.includes(here)) return "Phải đứng ở trạm nghiên cứu.";
+      const need=role==="sci"?4:5, cards=(a.cards||[]).map(Number);
+      if(cards.length!==need || new Set(cards).size!==need) return `Cần đúng ${need} thẻ cùng màu.`;
+      if(!cards.every(c=>isCity(c)&&ccol(c)===col&&hand.includes(c))) return "Thẻ không hợp lệ.";
+      cards.forEach(c=>discardCard(st,s,c)); st.cured[col]=1;
+      log(st,`🧪 ${who(st,s)} đã bào chế THUỐC GIẢI bệnh ${DIS[col].n}!`,"good"); fx(st,{t:"cure",col});
+      st.roles.forEach((r,p)=>{ if(r==="medic") medicSweep(st,p); });
+      checkErad(st,col); return 1;
+    }
+    case "cptake": {
+      if(role!=="cp") return "Chỉ Nhà hoạch định.";
+      if(st.cp!=null) return "Đã cất 1 thẻ Sự kiện rồi.";
+      const card=+a.card;
+      if(!isEv(card) || !st.pdisc.includes(card)) return "Thẻ Sự kiện này không có trong chồng bỏ.";
+      st.pdisc.splice(st.pdisc.indexOf(card),1); st.cp=card;
+      log(st,`📋 ${who(st,s)} cất thẻ ${EV[card].n} để dùng sau.`); return 1;
+    }
+  }
+  return "Hành động lạ.";
+}
+function playEvent(st,s,a){
+  const card=+a.card, e=EV[card];
+  if(!e) return "Không phải thẻ Sự kiện.";
+  const fromCp=st.roles[s]==="cp" && st.cp===card, inHand=st.hands[s].includes(card);
+  if(!inHand && !fromCp) return "Bạn không có thẻ này.";
+  if(st.pending && !(st.pending.type==="epi" && e.k==="rp")) return "Đang chờ xử lý, chưa dùng sự kiện được.";
+  if(st.phase==="draw" && !st.pending) return "Đang rút thẻ.";
+  let msg="";
+  if(e.k==="airlift"){
+    const p=+a.p, to=+a.to;
+    if(!(p>=0&&p<st.n) || !isCity(to) || st.loc[p]===to) return "Chọn quân và thành phố đích khác nơi đang đứng.";
+    msg=`đưa ${st.names[p]} tới ${cname(to)}`;
+  } else if(e.k==="grant"){
+    const to=+a.to;
+    if(!isCity(to) || st.stations.includes(to)) return "Chọn thành phố chưa có trạm.";
+    if(st.stations.length>=MAXST && !st.stations.includes(+a.rm)) return "Đã đủ 6 trạm — chọn 1 trạm để dời đi.";
+    msg=`xây trạm ở ${cname(to)}`;
+  } else if(e.k==="rp"){
+    if(!st.idisc.includes(+a.c)) return "Chọn 1 thẻ trong chồng bỏ Lây nhiễm.";
+    msg=`loại thẻ ${cname(+a.c)} khỏi trò chơi`;
+  } else if(e.k==="forecast"){
+    if(!st.ideck.length) return "Chồng Lây nhiễm đã hết.";
+    msg="xem và sắp xếp 6 thẻ Lây nhiễm trên cùng";
+  } else if(e.k==="quiet"){
+    if(st.quiet) return "Một đêm yên bình đang có hiệu lực rồi.";
+    msg="lượt tới không lây nhiễm";
+  }
+  if(fromCp){ st.cp=null; st.evout.push(card); } else discardCard(st,s,card);
+  st._undo=[];
+  log(st,`${e.i} ${who(st,s)} dùng sự kiện ${e.n}: ${msg}.`,"good"); fx(st,{t:"event",card});
+  if(e.k==="airlift"){ setLoc(st,+a.p,+a.to); fx(st,{t:"move",c:+a.to,p:+a.p}); }
+  else if(e.k==="grant"){ if(st.stations.length>=MAXST) st.stations.splice(st.stations.indexOf(+a.rm),1); st.stations.push(+a.to); fx(st,{t:"build",c:+a.to}); }
+  else if(e.k==="rp"){ st.idisc.splice(st.idisc.indexOf(+a.c),1); st.iout.push(+a.c); }
+  else if(e.k==="quiet") st.quiet=true;
+  else if(e.k==="forecast") st.pending={type:"forecast", s, cards:st.ideck.slice(-6).reverse()};
+}
+function forecastDone(st,s,a){
+  const P=st.pending;
+  if(!P || P.type!=="forecast") return "Không có Dự báo nào đang chờ.";
+  if(s!==P.s) return "Người dùng Dự báo sẽ sắp xếp.";
+  const order=(a.order||[]).map(Number);
+  if(order.length!==P.cards.length || P.cards.some(c=>!order.includes(c))) return "Thứ tự không hợp lệ.";
+  st.ideck.splice(st.ideck.length-order.length, order.length, ...order.slice().reverse());
+  st.pending=null;
+  log(st,`🔮 ${who(st,s)} đã sắp xếp lại 6 thẻ Lây nhiễm trên cùng.`);
+}
+function discardAct(st,s,a){
+  if(overLimit(st)!==s) return "Bạn chưa cần bỏ thẻ.";
+  const card=+a.card;
+  if(!st.hands[s].includes(card)) return "Không có thẻ này.";
+  discardCard(st,s,card); st._undo=[];
+  log(st,`🗑️ ${who(st,s)} bỏ thẻ ${cardName(card)} (giới hạn ${HANDMAX} thẻ).`);
+}
+function drawStep(st){
+  st._undo=[];
+  if(st.pdeck.length<2){ lose(st,"Chồng thẻ người chơi không còn đủ 2 lá — cả đội đã hết thời gian."); return; }
+  const cards=[st.pdeck.pop(), st.pdeck.pop()];
+  st.lastDraw={p:st.cur, cards};
+  log(st,`🂠 ${who(st,st.cur)} rút: ${cards.map(cardName).join(" + ")}.`);
+  fx(st,{t:"draw",p:st.cur,cards});
+  st.phase="draw"; st.drawQ=cards.slice();
+  continueDraw(st);
+}
+function continueDraw(st){
+  while(st.drawQ.length){
+    const c=st.drawQ.shift();
+    if(isEpi(c)){
+      epidemic(st);
+      if(st.won!==null) return;
+      if(rpHolder(st)>=0 && st.idisc.length){ st.pending={type:"epi", c:st.lastEpi}; return; }
+      intensify(st);
+    } else st.hands[st.cur].push(c);
+  }
+  st.phase="infect";
+}
+function epidemic(st){
+  st.epis++; st.rate=Math.min(st.rate+1, RATES.length-1);
+  const c=st.ideck.shift(), col=ccol(c);
+  st.lastEpi=c;
+  log(st,`☣️ BÙNG DỊCH! Tốc độ lây nhiễm tăng lên ${RATES[st.rate]}. ${cname(c)} nhận 3 khối ${DIS[col].n}.`,"epi");
+  fx(st,{t:"epi",c,col,rate:RATES[st.rate]});
+  place(st,c,col,3,new Set());
+  st.idisc.push(c);
+}
+function intensify(st){
+  const n=st.idisc.length;
+  st.ideck.push(...shuffle(st.idisc)); st.idisc=[];
+  log(st,`🔁 Tăng cường: trộn ${n} thẻ Lây nhiễm đã bỏ và đặt lên đầu chồng.`,"epi");
+}
+function infectStep(st){
+  st._undo=[];
+  if(st.quiet){
+    st.quiet=false; log(st,"🌙 Một đêm yên bình — không có lây nhiễm lượt này.","good"); fx(st,{t:"quiet"});
+  } else {
+    const n=RATES[st.rate], got=[];
+    for(let i=0;i<n && st.ideck.length;i++){
+      const c=st.ideck.pop(), col=ccol(c); got.push(c);
+      if(st.cured[col]===2) log(st,`🦠 ${cname(c)} — bệnh ${DIS[col].n} đã bị xoá sổ, không lây.`);
+      else { log(st,`🦠 Lây nhiễm ${cname(c)} (+1 ${DIS[col].n}).`); place(st,c,col,1,new Set()); }
+      st.idisc.push(c);
+      if(st.won!==null) return;
+    }
+    st.lastInfect=got; fx(st,{t:"infset",cards:got});
+  }
+  st.cur=(st.cur+1)%st.n; st.acts=4; st.opsUsed=false; st.phase="actions"; st.turn++;
+  log(st,`— Lượt ${st.turn}: ${who(st,st.cur)} —`,"sys");
+}
+function viewFor(st,mine){
+  const v=Object.assign({},st);
+  delete v.pdeck; delete v.ideck; delete v._undo; delete v.drawQ;
+  v.pdeckN=st.pdeck.length; v.ideckN=st.ideck.length; v.undoN=st._undo.length;
+  v.epiLeft=st.pdeck.filter(isEpi).length;
+  v.log=st.log.slice(-160);
+  v.mine=mine;
+  return v;
+}
+
+/* ================= NETWORK ================= */
+const PREFIX="daidich-vh-", SAVEKEY="daidich-save";
+let peer=null, conn=null, isHost=false, myName="", roomCode="", state=null, view=null, joinTimer=null;
+let seats=[];                        // host: [{name, id, conn, local}] — ghế 0 là chủ phòng
+let solo=false, hostOpen=false, joinTries=0, diffSel=5, soloN=2;
+const myId=(()=>{ try{ let x=sessionStorage.getItem("dd-id"); if(!x){ x=Math.random().toString(36).slice(2); sessionStorage.setItem("dd-id",x); } return x; }catch(e){ return Math.random().toString(36).slice(2); } })();
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(t){ const el=$("toast"); el.textContent=t; el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),2600); }
+function lobbyMsg(t,muted){ $("lobbyMsg").textContent=t||""; $("lobbyMsg").style.color=muted?"var(--muted)":""; }
+function genCode(){ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; const r=new Uint32Array(5); crypto.getRandomValues(r); for(const x of r) s+=A[x%A.length]; return s; }
+function roomLink(){ return location.origin+location.pathname+"?room="+roomCode; }
+function getName(){
+  const n=$("nameInput").value.trim();
+  if(!n){ lobbyMsg("Nhập tên trước đã nhé 🧑‍🔬"); $("nameInput").focus(); return null; }
+  try{ localStorage.setItem("daidich-name",n); }catch(e){}
+  return n;
+}
+function lockLobby(b){ ["createBtn","joinBtn","soloBtn","resumeBtn"].forEach(id=>$(id).disabled=b); }
+
+function hostMine(){ return seats.map((s,i)=>(i===0||s.local||(state&&!(s.conn&&s.conn.open)))?i:-1).filter(i=>i>=0); }
+function offline(){ return seats.map((s,i)=>i>0&&!s.local&&!(s.conn&&s.conn.open)); }
+
+function startSolo(){
+  const n=getName(); if(!n) return;
+  myName=n; isHost=true; solo=true; roomCode="";
+  seats=range(soloN).map(()=>({name:n, local:true}));
+  state=newGame(seats.map(s=>s.name), diffSel, 1, true);
+  startGameUI(); broadcast();
+}
+function resumeSolo(){
+  let sv=null; try{ sv=JSON.parse(localStorage.getItem(SAVEKEY)); }catch(e){}
+  if(!sv || !sv.n){ toast("Không đọc được ván đã lưu."); return; }
+  isHost=true; solo=true; roomCode=""; state=sv;
+  if(!state._undo) state._undo=[];
+  seats=range(state.n).map(i=>({name:state.names[i], local:true}));
+  startGameUI(); broadcast();
+}
+function newMatch(){
+  const g=state?state.games+1:1;
+  state=newGame(seats.map(s=>s.name), state?state.diff:diffSel, g, solo);
+  closeOverlay(); broadcast();
+}
+function createRoom(){
+  const n=getName(); if(!n) return;
+  if(typeof Peer==="undefined"){ lobbyMsg("Không tải được thư viện kết nối, kiểm tra mạng."); return; }
+  myName=n; isHost=true; solo=false; lockLobby(true); lobbyMsg("");
+  seats=[{name:n, local:true}];
+  roomCode=genCode();
+  peer=new Peer(PREFIX+roomCode);
+  peer.on("open",()=>{
+    setNetStatus();
+    if(hostOpen) return;
+    hostOpen=true;
+    $("lobbyMain").classList.add("hidden"); $("lobbyWait").classList.remove("hidden");
+    $("waitCode").textContent=roomCode; $("waitLink").textContent=roomLink();
+    history.replaceState(null,"","?room="+roomCode+"&host=1");
+    syncDiffSeg(); sendLobby();
+  });
+  peer.on("connection", onGuestConn);
+  peer.on("disconnected",()=>{ setNetStatus(); setTimeout(ensureHostOnline,1000); });
+  peer.on("error",e=>{
+    if(e.type==="peer-unavailable") return;
+    if(hostOpen){ console.warn(e); setNetStatus(); return; }
+    if(e.type==="unavailable-id"){ peer.destroy(); isHost=false; createRoom(); return; }
+    console.warn(e); lobbyMsg("Không kết nối được máy chủ phòng ("+e.type+"). Thử lại nhé."); peer.destroy(); lockLobby(false);
+  });
+}
+// Điện thoại chuyển app (VD gửi mã qua Zalo) làm tab rớt khỏi máy chủ PeerJS → chủ phòng tự nối lại.
+function ensureHostOnline(){
+  if(isHost && hostOpen && peer && !peer.destroyed && peer.disconnected){ try{ peer.reconnect(); }catch(e){ console.warn(e); } }
+  setNetStatus();
+}
+function setNetStatus(){
+  if(!isHost || !roomCode) return;
+  const ok=!!(peer && peer.open && !peer.disconnected);
+  const el=$("netStatus");
+  el.className="net "+(ok?"ok":"bad");
+  el.textContent=ok?"🟢 Phòng đang mở — bạn bè vào được":"🟠 Mất kết nối máy chủ, đang nối lại…";
+}
+setInterval(ensureHostOnline,4000);
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden) ensureHostOnline(); });
+window.addEventListener("online",ensureHostOnline);
+window.addEventListener("pageshow",ensureHostOnline);
+function onGuestConn(c){
+  c.on("data",msg=>{
+    if(!msg || typeof msg!=="object") return;
+    if(msg.t==="hello"){
+      const name=String(msg.name||"Khách").slice(0,16), id=String(msg.id||"");
+      let i=seats.findIndex(s=>!s.local&&s.id&&s.id===id);
+      if(!state){
+        if(i<0){
+          if(seats.length>=4){ c.send({t:"full",msg:"Phòng đã đủ 4 người."}); setTimeout(()=>c.close(),300); return; }
+          seats.push({name,id,conn:c,local:false});
+        } else { seats[i].conn=c; seats[i].name=name; }
+        sendLobby();
+      } else {
+        if(i<0){ c.send({t:"full",msg:"Ván đã bắt đầu, không vào thêm được."}); setTimeout(()=>c.close(),300); return; }
+        seats[i].conn=c; log(state,`${state.names[i]} đã vào lại phòng.`);
+        broadcast();
+      }
+    } else if(msg.t==="act" && state){
+      const i=seats.findIndex(s=>s.conn===c); if(i<1) return;
+      const a=msg.a||{};
+      if(a.k==="rematch"){ if(state.phase==="end") newMatch(); return; }
+      const err=applyAction(state,i,a);
+      if(err) c.send({t:"err",msg:err});
+      broadcast();
+    }
+  });
+  c.on("close",()=>{
+    const i=seats.findIndex(s=>s.conn&&s.conn===c); if(i<1) return;
+    if(!state){ seats.splice(i,1); sendLobby(); }
+    else { seats[i].conn=null; log(state,`${state.names[i]} mất kết nối — chủ phòng tạm điều khiển thay.`); broadcast(); }
+  });
+}
+function lobbyList(){ return seats.map(s=>({name:s.name, local:!!s.local})); }
+function sendLobby(){
+  renderSeats(lobbyList(),true);
+  seats.forEach((s,i)=>{ if(i>0&&s.conn&&s.conn.open) s.conn.send({t:"lobby",seats:lobbyList(),you:i,diff:diffSel}); });
+}
+function renderSeats(list,host,you=0){
+  $("seatList").innerHTML=range(4).map(i=>{
+    const s=list[i];
+    if(!s) return `<div class="seat empty">Ghế trống</div>`;
+    const tag = i===0 ? " <span class='tagm'>(chủ phòng)</span>" : s.local ? " <span class='tagm'>(chủ phòng điều khiển)</span>" : "";
+    return `<div class="seat">🧑‍🔬 ${esc(s.name)}${tag}${i===you&&!host?" <span class='tagm'>(bạn)</span>":""}
+      ${host&&i>0&&s.local?`<button class="x" data-rm="${i}" title="Bỏ">✕</button>`:""}</div>`;
+  }).join("");
+  if(host){
+    $("addLocalBtn").disabled=list.length>=4;
+    $("startBtn").disabled=list.length<2;
+    $("waitNote").innerHTML=list.length<2?`Cần ít nhất 2 nhân vật · đang chờ người chơi<span class="dots"></span>`:`Đủ người — bấm <b>Bắt đầu</b> khi sẵn sàng. Vai trò được chia ngẫu nhiên.`;
+  }
+}
+function broadcast(){
+  const off=offline();
+  onView(Object.assign(viewFor(state,hostMine()),{offline:off}));
+  seats.forEach((s,i)=>{ if(i>0&&!s.local&&s.conn&&s.conn.open) s.conn.send({t:"state",view:Object.assign(viewFor(state,[i]),{offline:off})}); });
+  if(solo){ try{ if(state.phase==="end") localStorage.removeItem(SAVEKEY); else localStorage.setItem(SAVEKEY,JSON.stringify(state)); }catch(e){} }
+}
+function joinRoom(){
+  const n=getName(); if(!n) return;
+  const code=$("codeInput").value.trim().toUpperCase();
+  if(code.length!==5){ lobbyMsg("Mã phòng gồm 5 ký tự."); return; }
+  if(typeof Peer==="undefined"){ lobbyMsg("Không tải được thư viện kết nối, kiểm tra mạng."); return; }
+  myName=n; roomCode=code; isHost=false; lockLobby(true); lobbyMsg("Đang kết nối…",true);
+  joinTries=0; guestPeer();
+}
+function guestPeer(){
+  if(peer) peer.destroy();
+  peer=new Peer();
+  peer.on("open",()=>connectToHost());
+  peer.on("error",onGuestError);
+  peer.on("disconnected",()=>{ if(!peer.destroyed) peer.reconnect(); });
+}
+const RETRY=4;
+function onGuestError(e){
+  console.warn(e);
+  if(view){ if(e.type==="peer-unavailable") showDisconnected(); return; }
+  clearTimeout(joinTimer);
+  const lost=e.type==="peer-unavailable";
+  if((lost||["network","server-error","socket-error","socket-closed"].includes(e.type)) && joinTries<RETRY){
+    joinTries++;
+    lobbyMsg(`${lost?`Chưa thấy phòng ${roomCode}`:"Máy chủ kết nối chập chờn"}, đang thử lại (${joinTries}/${RETRY})…`,true);
+    setTimeout(()=>{ if(!view) guestPeer(); },2000);
+    return;
+  }
+  lobbyMsg(lost?`Không tìm thấy phòng ${roomCode}. Kiểm tra lại mã, và nhờ chủ phòng mở lại tab game.`:"Lỗi kết nối: "+e.type);
+  lockLobby(false); showLobbyMain();
+}
+function showLobbyMain(){ $("lobbyWait").classList.add("hidden"); $("lobbyMain").classList.remove("hidden"); }
+function connectToHost(){
+  conn=peer.connect(PREFIX+roomCode,{reliable:true});
+  clearTimeout(joinTimer);
+  joinTimer=setTimeout(()=>{ if(!view&&$("lobbyWait").classList.contains("hidden")){ lobbyMsg("Kết nối quá lâu. Chủ phòng còn mở tab không?"); lockLobby(false); } },15000);
+  conn.on("open",()=>conn.send({t:"hello",name:myName,id:myId}));
+  conn.on("data",msg=>{
+    if(!msg) return;
+    if(msg.t==="lobby"){
+      clearTimeout(joinTimer); lobbyMsg("");
+      $("lobbyMain").classList.add("hidden"); $("lobbyWait").classList.remove("hidden");
+      $("waitTitle").textContent="Đã vào phòng!"; $("waitTag").textContent="Mã phòng";
+      $("waitCode").textContent=roomCode; $("waitLink").classList.add("hidden"); $("copyRow").classList.add("hidden");
+      $("hostCtl").classList.add("hidden");
+      $("waitNote").innerHTML=`Độ khó: <b>${DIFF[msg.diff]||""}</b> · chờ chủ phòng bắt đầu<span class="dots"></span>`;
+      renderSeats(msg.seats,false,msg.you);
+      history.replaceState(null,"","?room="+roomCode);
+    }
+    else if(msg.t==="state"){ clearTimeout(joinTimer); lobbyMsg(""); if($("game").classList.contains("hidden")) startGameUI(); if(overlayId==="dc") closeOverlay(); onView(msg.view); }
+    else if(msg.t==="err") toast(msg.msg);
+    else if(msg.t==="full"){ lobbyMsg(msg.msg||"Phòng đã đủ người."); lockLobby(false); showLobbyMain(); }
+  });
+  conn.on("close",()=>{
+    if(view) showDisconnected();
+    else if(!$("lobbyWait").classList.contains("hidden")){ showLobbyMain(); lockLobby(false); lobbyMsg("Mất kết nối với chủ phòng."); }
+  });
+}
+function showDisconnected(){
+  openModal(`<h2>Mất kết nối</h2><p class="sub">Không liên lạc được với chủ phòng.</p>
+    <div class="mrow"><button class="btn" id="rejoinBtn">Kết nối lại</button></div>`,"dc");
+  $("rejoinBtn").onclick=()=>{ $("rejoinBtn").disabled=true; $("rejoinBtn").textContent="Đang thử…"; connectToHost(); };
+}
+// a.s = nhân vật thực hiện (mặc định là người đang tới lượt)
+function send(a,s){
+  a.s = s==null ? view.cur : s;
+  if(isHost){
+    if(a.k==="rematch"){ if(state.phase==="end") newMatch(); return; }
+    if(!hostMine().includes(a.s)){ toast("Bạn không điều khiển nhân vật này."); return; }
+    const err=applyAction(state,a.s,a); if(err) toast(err);
+    broadcast();
+  }
+  else if(conn && conn.open) conn.send({t:"act",a});
+  else toast("Chưa kết nối với chủ phòng.");
+}
+
+/* ================= SOUND ================= */
+let actx=null, soundOn=true;
+try{ soundOn=localStorage.getItem("daidich-snd")!=="0"; }catch(e){}
+function ac(){
+  if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return null; } }
+  if(actx.state==="suspended") actx.resume();
+  return actx;
+}
+document.addEventListener("pointerdown",()=>{ if(soundOn) ac(); });
+function tone(f,t0,dur,type="sine",vol=.12,f2){
+  const a=ac(); if(!a) return;
+  const o=a.createOscillator(), g=a.createGain(), t=a.currentTime+t0;
+  o.type=type; o.frequency.setValueAtTime(f,t); if(f2) o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(.0001,t); g.gain.linearRampToValueAtTime(vol,t+.012); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t+dur+.05);
+}
+function noise(t0,dur,freq,vol,f2){
+  const a=ac(); if(!a) return;
+  const t=a.currentTime+t0, buf=a.createBuffer(1,Math.ceil(a.sampleRate*dur),a.sampleRate), d=buf.getChannelData(0);
+  for(let j=0;j<d.length;j++) d[j]=(Math.random()*2-1)*(1-j/d.length);
+  const s=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain();
+  f.type="bandpass"; f.frequency.setValueAtTime(freq,t); if(f2) f.frequency.exponentialRampToValueAtTime(f2,t+dur); f.Q.value=1.2; g.gain.value=vol;
+  s.buffer=buf; s.connect(f).connect(g).connect(a.destination); s.start(t);
+}
+function sfx(kind){
+  if(!soundOn) return; const a=ac(); if(!a||a.state!=="running") return;
+  if(kind==="move"){ tone(520,0,.12,"triangle",.07); tone(780,.06,.14,"triangle",.05); }
+  else if(kind==="treat"){ tone(880,0,.12,"sine",.08); tone(1320,.07,.18,"sine",.06); }
+  else if(kind==="build"){ noise(0,.08,1200,.3); tone(330,0,.25,"square",.04); tone(440,.1,.3,"triangle",.07); }
+  else if(kind==="share"){ tone(660,0,.15,"sine",.08); tone(990,.1,.2,"sine",.07); }
+  else if(kind==="draw"){ noise(0,.1,2500,.3,900); noise(.16,.1,2500,.3,900); }
+  else if(kind==="inf"){ tone(190,0,.28,"sawtooth",.045,120); }
+  else if(kind==="ob"){ noise(0,.6,500,.8,80); tone(90,0,.6,"sine",.18,40); }
+  else if(kind==="epi"){ for(let i=0;i<3;i++){ tone(620,i*.45,.22,"square",.05,880); tone(880,i*.45+.22,.22,"square",.05,620); } noise(0,.5,300,.4,60); }
+  else if(kind==="cure"){ [523,659,784,1047,1319].forEach((f,i)=>tone(f,i*.08,.6,"sine",.09)); }
+  else if(kind==="win"){ [523,659,784,1047,784,1047,1319,1568].forEach((f,i)=>tone(f,i*.12,.5,"triangle",.09)); }
+  else if(kind==="lose"){ [392,349,311,262,196].forEach((f,i)=>tone(f,i*.25,.6,"triangle",.09)); }
+  else if(kind==="turn"){ tone(740,0,.18,"sine",.08); tone(988,.12,.25,"sine",.07); }
+  else if(kind==="event"){ tone(988,0,.15,"sine",.06); tone(1480,.08,.3,"sine",.05); noise(0,.3,5000,.15,1500); }
+  else if(kind==="block"){ tone(300,0,.2,"triangle",.07,600); }
+}
+
+/* ================= MAP ================= */
+const MAPW=1830, MAPH=840, SVGNS="http://www.w3.org/2000/svg";
+const svg=$("map"), wrap=$("mapwrap");
+let cam={x:MAPW/2,y:MAPH/2,k:.5}, sf=1, cityEls=[], edgeEls=[];
+const XY=c=>[CITY[c][3],CITY[c][4]];
+function buildMap(){
+  let g="";
+  for(let lon=-120;lon<=165;lon+=30){ const x=(lon+140)*6; g+=`M${x} -200V${MAPH+200}`; }
+  for(let lat=60;lat>=-40;lat-=30){ const y=(74-lat)*7; g+=`M-200 ${y}H${MAPW+200}`; }
+  $("grat").setAttribute("d",g);
+  $("land").setAttribute("d",LAND);
+  let e="";
+  EDGE_LIST.forEach(([a,b],i)=>{
+    const [x1,y1]=XY(a), [x2,y2]=XY(b);
+    if(Math.abs(x1-x2)>900){                                  // tuyến vòng qua Thái Bình Dương
+      const [lx,ly,rx,ry]=x1<x2?[x1,y1,x2,y2]:[x2,y2,x1,y1], D=lx+MAPW-rx, E=60;
+      const yl=ly+(ry-ly)*((lx+E)/D), yr=ry+(ly-ry)*((MAPW-rx+E)/D);
+      e+=`<path class="edge wrap" data-i="${i}" d="M${lx} ${ly}L${-E} ${yl.toFixed(1)}M${rx} ${ry}L${MAPW+E} ${yr.toFixed(1)}"/>`;
+    } else e+=`<path class="edge" data-i="${i}" d="M${x1} ${y1}L${x2} ${y2}"/>`;
+  });
+  $("edges").innerHTML=e;
+  edgeEls=[...$("edges").children];
+  $("cities").innerHTML=range(NC).map(c=>`<g class="city" data-c="${c}"></g>`).join("");
+  cityEls=[...$("cities").children];
+  setSF(true);
+}
+function setSF(force){
+  const s=Math.min(3,Math.max(.8,Math.pow(cam.k,-.62)));
+  if(!force && Math.abs(s-sf)<.004) return;
+  sf=s;
+  cityEls.forEach((g,i)=>g.setAttribute("transform",`translate(${CITY[i][3]} ${CITY[i][4]}) scale(${sf.toFixed(3)})`));
+  svg.classList.toggle("nolbl", 11.5*sf*cam.k<8.3);
+}
+function vw(){ return wrap.clientWidth||1; } function vh(){ return wrap.clientHeight||1; }
+function fitK(){ return Math.min(vw()/MAPW, vh()/MAPH); }
+function clampCam(){
+  const w=vw(), h=vh();
+  cam.k=Math.min(3,Math.max(fitK()*.92,cam.k));
+  const hw=w/2/cam.k, hh=h/2/cam.k, m=50;
+  cam.x = MAPW*cam.k<=w ? MAPW/2 : Math.min(MAPW-hw+m, Math.max(hw-m, cam.x));
+  cam.y = MAPH*cam.k<=h ? MAPH/2 : Math.min(MAPH-hh+m, Math.max(hh-m, cam.y));
+}
+let camRaf=0;
+function applyCam(){
+  if(camRaf) return;
+  camRaf=requestAnimationFrame(()=>{
+    camRaf=0; clampCam();
+    const w=vw(), h=vh();
+    svg.setAttribute("viewBox",`${(cam.x-w/2/cam.k).toFixed(2)} ${(cam.y-h/2/cam.k).toFixed(2)} ${(w/cam.k).toFixed(2)} ${(h/cam.k).toFixed(2)}`);
+    setSF();
+  });
+}
+function initCam(){
+  const fit=fitK();
+  cam.k = fit>=.42 ? fit : Math.max(fit, Math.min(vh()/MAPH*1.05, .8));
+  const c=view?view.loc[view.cur]:ATL; [cam.x,cam.y]=XY(c);
+  applyCam();
+}
+let flyAnim=0;
+function flyTo(x,y,k,dur=450){
+  cancelAnimationFrame(flyAnim);
+  const s={...cam}, t0=performance.now(); k=k||cam.k;
+  const step=t=>{
+    const u=Math.min(1,(t-t0)/dur), e=u<.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+    cam.x=s.x+(x-s.x)*e; cam.y=s.y+(y-s.y)*e; cam.k=s.k*Math.pow(k/s.k,e);
+    applyCam(); if(u<1) flyAnim=requestAnimationFrame(step);
+  };
+  flyAnim=requestAnimationFrame(step);
+}
+function flyToCity(c,minK){ const [x,y]=XY(c); flyTo(x,y,Math.max(cam.k,minK||0)); }
+function zoomAt(f,sx,sy){
+  const w=vw(), h=vh();
+  if(sx==null){ sx=w/2; sy=h/2; }
+  const wx=cam.x+(sx-w/2)/cam.k, wy=cam.y+(sy-h/2)/cam.k;
+  cam.k=Math.min(3,Math.max(fitK()*.92,cam.k*f));
+  cam.x=wx-(sx-w/2)/cam.k; cam.y=wy-(sy-h/2)/cam.k;
+  applyCam();
+}
+// cử chỉ: kéo để di chuyển, chụm 2 ngón để phóng to, chạm để chọn thành phố
+const ptrs=new Map(); let gest=null;
+wrap.addEventListener("pointerdown",e=>{
+  if(e.target.closest(".ctl,.citycard,.mtop")) return;
+  cancelAnimationFrame(flyAnim);
+  try{ wrap.setPointerCapture(e.pointerId); }catch(_){}
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  const r=wrap.getBoundingClientRect();
+  if(ptrs.size===1) gest={tap:true, x0:e.clientX, y0:e.clientY, t0:Date.now(), r};
+  else if(gest){ gest.tap=false; gest.pinch=null; }
+});
+wrap.addEventListener("pointermove",e=>{
+  if(!ptrs.has(e.pointerId) || !gest) return;
+  const prev=ptrs.get(e.pointerId), cur={x:e.clientX,y:e.clientY};
+  ptrs.set(e.pointerId,cur);
+  if(ptrs.size===1){
+    if(Math.hypot(cur.x-gest.x0,cur.y-gest.y0)>8) gest.tap=false;
+    if(!gest.tap){ cam.x-=(cur.x-prev.x)/cam.k; cam.y-=(cur.y-prev.y)/cam.k; applyCam(); }
+  } else if(ptrs.size===2){
+    const [a,b]=[...ptrs.values()], d=Math.hypot(a.x-b.x,a.y-b.y), mx=(a.x+b.x)/2-gest.r.left, my=(a.y+b.y)/2-gest.r.top;
+    if(gest.pinch){ zoomAt(d/gest.pinch.d, mx, my); cam.x-=(mx-gest.pinch.mx)/cam.k; cam.y-=(my-gest.pinch.my)/cam.k; applyCam(); }
+    gest.pinch={d,mx,my};
+  }
+});
+function ptrEnd(e){
+  if(!ptrs.has(e.pointerId)) return;
+  ptrs.delete(e.pointerId);
+  if(ptrs.size===0 && gest){
+    if(gest.tap && Date.now()-gest.t0<600) mapTap(e.clientX-gest.r.left, e.clientY-gest.r.top);
+    gest=null;
+  } else if(gest) gest.pinch=null;
+}
+wrap.addEventListener("pointerup",ptrEnd);
+wrap.addEventListener("pointercancel",ptrEnd);
+wrap.addEventListener("wheel",e=>{ e.preventDefault(); const r=wrap.getBoundingClientRect(); zoomAt(Math.exp(-e.deltaY*.0016),e.clientX-r.left,e.clientY-r.top); },{passive:false});
+window.addEventListener("resize",()=>applyCam());
+function mapTap(sx,sy){
+  const w=vw(), h=vh(), wx=cam.x+(sx-w/2)/cam.k, wy=cam.y+(sy-h/2)/cam.k;
+  let best=-1, bd=1e9;
+  for(let c=0;c<NC;c++){ const d=Math.hypot(CITY[c][3]-wx,CITY[c][4]-wy)*cam.k; if(d<bd){ bd=d; best=c; } }
+  const lim=Math.max(26, 15*sf*cam.k);
+  if(best>=0 && bd<=lim) onCityTap(best);
+  else { ui.sel=null; renderCityCard(); renderMapState(); }
+}
+function ripple(c,color,big){
+  const [x,y]=XY(c), el=document.createElementNS(SVGNS,"circle");
+  el.setAttribute("cx",x); el.setAttribute("cy",y); el.setAttribute("r",12*sf);
+  el.setAttribute("class","rip"+(big?" big":"")); el.style.stroke=color;
+  $("fxl").appendChild(el); setTimeout(()=>el.remove(),1500);
+}
+const KCOL=["#4b95ff","#ffcb2e","#c3c9d8","#ff4f5e"];
+function cityInner(c){
+  const v=view, col=ccol(c), cubes=v.cubes[c];
+  let h=`<circle class="halo" r="17"/>`;
+  if(cubes.some(x=>x>=3)) h+=`<circle class="danger" r="13.5"/>`;
+  h+=`<circle class="dot k${col}" r="8.5"/><circle class="shine" r="2.8" cx="-2.6" cy="-2.6"/>`;
+  if(v.stations.includes(c)) h+=`<g class="stn" transform="translate(-19 -1)"><path class="b" d="M-6.5 1.2L0 -5.5L6.5 1.2V7.5H-6.5Z"/><path class="x" d="M-2 3.4H2M0 1.4V5.4"/></g>`;
+  let row=0;
+  for(let k=0;k<4;k++){
+    const n=cubes[k]; if(!n) continue;
+    for(let i=0;i<n;i++){
+      const x=(i-(n-1)/2)*10.5-4.25, y=-24-row*10.5;
+      h+=`<g class="cube k${k}" transform="translate(${x} ${y})"><rect width="8.5" height="8.5" rx="1.6"/><rect class="hl" width="8.5" height="2.6" rx="1.3"/></g>`;
+    }
+    row++;
+  }
+  const ps=range(v.n).filter(p=>v.loc[p]===c);
+  ps.forEach((p,i)=>{
+    const rc=ROLES[v.roles[p]].c;
+    h+=`<g class="pawn${p===v.cur?" cur":""}" transform="translate(${13+i*6.5} 4) scale(.92)"><path d="M-4.6 7Q-4.6 -.5 0 -.5Q4.6 -.5 4.6 7Z" fill="${rc}"/><circle cy="-3.6" r="3.4" fill="${rc}"/></g>`;
+  });
+  h+=`<text class="lbl" y="25">${esc(cname(c))}</text>`;
+  return h;
+}
+let lastCityHTML=[];
+function renderMap(){
+  if(!view) return;
+  for(let c=0;c<NC;c++){
+    const h=cityInner(c);
+    if(h!==lastCityHTML[c]){ cityEls[c].innerHTML=h; lastCityHTML[c]=h; }
+    cityEls[c].classList.toggle("hasp", view.loc.includes(c));
+  }
+  const layer=$("cities");
+  [...new Set(view.loc)].forEach(c=>{ if(layer.lastElementChild!==cityEls[c]) layer.appendChild(cityEls[c]); });
+  if(ui.sel!=null) layer.appendChild(cityEls[ui.sel]);
+  renderMapState();
+}
+function activePawn(){
+  const v=view;
+  if(v.roles[v.cur]==="disp" && ui.pawn!=null && ui.pawn<v.n) return ui.pawn;
+  return v.cur;
+}
+function renderMapState(){
+  if(!view) return;
+  const v=view, ca=canAct(), pawn=activePawn(), at=v.loc[pawn];
+  const reach=new Set();
+  if(ca && !ui.pick){ ADJ[at].forEach(c=>reach.add(c)); if(v.stations.includes(at)) v.stations.forEach(c=>{ if(c!==at) reach.add(c); }); }
+  for(let c=0;c<NC;c++){
+    const el=cityEls[c];
+    el.classList.toggle("reach", reach.has(c));
+    el.classList.toggle("sel", ui.sel===c);
+    el.classList.toggle("pick", !!(ui.pick && ui.pick.valid(c)));
+  }
+  edgeEls.forEach((el,i)=>{ const [a,b]=EDGE_LIST[i]; el.classList.toggle("hot", ca && !ui.pick && (a===at||b===at)); });
+}
+
+/* ================= UI STATE ================= */
+let ui={sel:null, viewSeat:null, pawn:null, pick:null}, overlayId=null, lastFx=0, introShown=0, endTimer=null, camInit=false;
+const mine=()=>view?view.mine||[]:[];
+const isMine=p=>mine().includes(p);
+const curMine=()=>!!view && isMine(view.cur);
+const canAct=()=>curMine() && view.phase==="actions" && !view.pending && overLimit(view)<0 && view.acts>0;
+const allMine=()=>view && mine().length===view.n;
+function viewSeat(){
+  const v=view;
+  if(ui.viewSeat!=null && ui.viewSeat<v.n) return ui.viewSeat;
+  if(curMine()) return v.cur;
+  return mine().length ? mine()[0] : v.cur;
+}
+const pname=(v,p)=>esc(v.names[p]);
+function chip(c,attr=""){
+  if(isCity(c)) return `<span class="cc k${ccol(c)}" ${attr}>${esc(cname(c))}</span>`;
+  if(isEv(c)) return `<span class="cc ev" ${attr}>${EV[c].i} ${EV[c].n}</span>`;
+  return `<span class="cc epi" ${attr}>☣️ Bùng dịch</span>`;
+}
+function cardHTML(c,cls="",attr=""){
+  if(isCity(c)) return `<button class="card k${ccol(c)} ${cls}" data-card="${c}" ${attr}><span class="cn">${esc(cname(c))}</span><span class="cs">${DIS[ccol(c)].n} · ${CITY[c][5].toLocaleString("vi-VN")} tr</span></button>`;
+  if(isEv(c)) return `<button class="card ev ${cls}" data-card="${c}" ${attr}><span class="cn">${EV[c].i} ${EV[c].n}</span><span class="cs">Sự kiện</span></button>`;
+  return `<button class="card epi ${cls}" ${attr}><span class="cn">☣️ Bùng dịch</span><span class="cs">Epidemic</span></button>`;
+}
+const sortHand=h=>h.slice().sort((a,b)=>(isEv(a)?9:ccol(a))-(isEv(b)?9:ccol(b)) || cardName(a).localeCompare(cardName(b),"vi"));
+
+/* ================= RENDER ================= */
+function startGameUI(){
+  $("lobby").classList.add("hidden"); $("game").classList.remove("hidden");
+  document.body.classList.add("ingame");
+  if(!cityEls.length) buildMap();
+  if(!isHost && roomCode) history.replaceState(null,"","?room="+roomCode);
+}
+function onView(v){
+  const prev=view; view=v;
+  const newGame = !prev || prev.games!==v.games;
+  if(newGame){
+    ui={sel:null, viewSeat:null, pawn:null, pick:null};
+    lastCityHTML=[];
+    const fresh=v.turn===1 && v.moveNo===0;
+    lastFx = fresh ? 0 : Math.max(0,...v.fx.map(e=>e.id));
+    if(prev && overlayId==="end") closeOverlay();
+  }
+  if(!camInit){ camInit=true; requestAnimationFrame(initCam); }
+  else if(newGame) initCam();
+  if(prev && !newGame && prev.cur!==v.cur){
+    if(allMine()) ui.viewSeat=null;
+    ui.pawn=null;
+    if(isMine(v.cur)){ if(!allMine()) sfx("turn"); }
+    flyToCity(v.loc[v.cur]);
+  }
+  const fresh=v.fx.filter(e=>e.id>lastFx);
+  if(v.fx.length) lastFx=Math.max(lastFx,...v.fx.map(e=>e.id));
+  render();
+  playFx(fresh, newGame);
+  if(newGame && introShown!==v.games && v.phase!=="end" && v.turn===1 && v.moveNo<3){ introShown=v.games; setTimeout(showIntro, fresh.length?900:200); }
+  clearTimeout(endTimer);
+  if(v.phase==="end"){ if(overlayId!=="end") endTimer=setTimeout(()=>{ if(view.phase==="end" && overlayId!=="rules") showEnd(); }, prev&&prev.phase!=="end"?2200:300); }
+  autoModals();
+  const need=(curMine() && (v.phase==="actions"||v.phase==="infect")) || (overLimit(v)>=0 && isMine(overLimit(v)));
+  document.title = need && !allMine() ? "● Đến lượt bạn · Đại Dịch" : "Đại Dịch";
+}
+function render(){
+  if(!view) return;
+  renderTop(); renderMap(); renderDock(); renderCityCard(); renderPickbar();
+  if(overlayId==="info") renderInfo();
+}
+function renderTop(){
+  const v=view;
+  const ob=$("obChip"); ob.innerHTML=`💥 ${v.outbreaks}<small>/${MAXOB}</small>`;
+  ob.className="chip"+(v.outbreaks>=6?" hot":v.outbreaks>=4?" warn":"");
+  $("rateChip").innerHTML=`🦠 ${RATES[v.rate]}<small>/lượt</small>`;
+  $("rateChip").className="chip"+(v.rate>=5?" hot":v.rate>=3?" warn":"");
+  $("cures").innerHTML=v.cured.map((s,k)=>`<div class="vial ${s===2?"erad":s?"cured":""} ${v.supply[k]<=5?"low":""}" style="--kc:${KCOL[k]}" title="${DIS[k].n}: ${s===2?"đã xoá sổ":s?"đã có thuốc":"chưa có thuốc"} · còn ${v.supply[k]} khối">
+    <span class="g">${s===2?"★":s?"✓":"⚗"}</span><span class="s">${v.supply[k]}</span></div>`).join("");
+  const dk=$("deckChip"); dk.innerHTML=`🂠 ${v.pdeckN}<small> ☣${v.epiLeft}</small>`;
+  dk.className="chip"+(v.pdeckN<=4?" hot":v.pdeckN<=10?" warn":"");
+}
+function renderDock(){
+  const v=view, me=mine(), vs=viewSeat(), cm=curMine(), lim=overLimit(v);
+  // người chơi
+  $("pstrip").className="pstrip n"+v.n;
+  $("pstrip").innerHTML=range(v.n).map(p=>{
+    const r=ROLES[v.roles[p]], off=v.offline&&v.offline[p];
+    const tag = !allMine() && isMine(p) ? " · bạn" : "";
+    return `<button class="pc ${p===v.cur?"cur":""} ${p===vs?"view":""}" data-p="${p}" style="--rc:${r.c}">
+      <span class="av">${r.i}</span><span class="nm">${pname(v,p)}${tag}<small>${esc(cname(v.loc[p]))}</small></span>
+      <span class="ct">${off?"<span class='off'>⚠</span>":""}🂠${v.hands[p].length}</span></button>`;
+  }).join("");
+  // thanh lượt
+  const cur=v.cur, r=ROLES[v.roles[cur]];
+  let h=`<span class="av lg" style="--rc:${r.c}">${r.i}</span><div class="who">`;
+  if(v.phase==="end") h+=`<b>${v.won?"🏆 Chiến thắng!":"💀 Thất bại"}</b><small>${esc(v.why)}</small>`;
+  else {
+    h+= cm && !allMine() ? `<b>Lượt của bạn</b>` : `Lượt của <b>${pname(v,cur)}</b>`;
+    const sub=[v.roleNames?"":r.n, `ở ${cname(v.loc[cur])}`, `lượt ${v.turn}`].filter(Boolean).join(" · ");
+    h+=`<small>${esc(sub)}</small>`;
+  }
+  h+=`</div>`;
+  h+=`<div class="tbb">`;
+  if(v.phase==="actions") h+=`<div class="pips" title="Hành động còn lại">${range(4).map(i=>`<i class="pip ${i<v.acts?"":"off"}"></i>`).join("")}</div>`;
+  if(cm && !v.pending && lim<0){
+    if(v.phase==="actions"){
+      if(v.undoN) h+=`<button class="btn ghost sq" id="undoBtn" title="Hoàn tác">↩</button>`;
+      h+= v.acts>0 ? `<button class="btn ghost sm" id="endBtn">Hết lượt</button>` : `<button class="btn gold glow" id="drawBtn">🂠 Rút 2 thẻ</button>`;
+    } else if(v.phase==="infect") h+=`<button class="btn red glow" id="infBtn">🦠 ${v.quiet?"Qua đêm":"Lây nhiễm "+RATES[v.rate]}</button>`;
+  }
+  if(v.phase==="end") h+=`<button class="btn sm" id="endInfoBtn">Kết quả</button>`;
+  $("turnbar").innerHTML=h+`</div>`;
+  // thông báo giai đoạn
+  let ph="";
+  const PB=(cls,txt,btns="")=>`<div class="pb ${cls}"><span class="pt">${txt}</span>${btns?`<span class="pbb">${btns}</span>`:""}</div>`;
+  if(v.pending && v.pending.type==="epi"){
+    const rh=rpHolder(v);
+    ph=PB("epi",`☣️ Bùng dịch ở <b>${esc(cname(v.pending.c))}</b>. Trước khi trộn lại chồng bỏ Lây nhiễm, có thể dùng <b>Cộng đồng kiên cường</b>.`,
+      (rh>=0&&isMine(rh)?`<button class="btn gold sm" id="rpNowBtn">💪 Dùng</button>`:"")+
+      (cm?`<button class="btn sm" id="epiGoBtn">Tiếp tục ▶</button>`:`<span class="muted">Chờ ${pname(v,cur)}…</span>`));
+  } else if(v.pending && v.pending.type==="forecast"){
+    ph=PB("",`🔮 <b>${pname(v,v.pending.s)}</b> đang sắp xếp 6 thẻ Lây nhiễm trên cùng…`, isMine(v.pending.s)?`<button class="btn sm" id="fcOpenBtn">Mở</button>`:"");
+  } else if(lim>=0){
+    ph=PB("warn",`✋ <b>${pname(v,lim)}</b> có ${v.hands[lim].length} thẻ — phải bỏ bớt (hoặc dùng Sự kiện) còn ${HANDMAX}.`, isMine(lim)?`<button class="btn gold sm" id="discBtn">Chọn thẻ</button>`:"");
+  } else if(v.phase==="infect"){
+    ph=PB("",`Vừa rút ${v.lastDraw?v.lastDraw.cards.map(c=>chip(c)).join(" "):""} · ${v.quiet?"🌙 lượt này <b>không lây nhiễm</b>.":`sắp lây nhiễm <b>${RATES[v.rate]}</b> thành phố.`} Có thể dùng Sự kiện trước.`);
+  } else if(v.phase==="actions" && cm){
+    if(v.acts===0) ph=PB("",`Đã hết hành động — bấm <b>Rút 2 thẻ</b> (vẫn hoàn tác được nếu bấm nhầm).`);
+    else if(v.turn===1 && v.acts===4) ph=PB("",`👆 Chạm thành phố để di chuyển · vòng xanh = đi bộ tới được.`);
+  }
+  $("phasebar").innerHTML=ph;
+  // hành động
+  renderActs();
+  // bài trên tay
+  const hd=v.hands[vs], rr=ROLES[v.roles[vs]];
+  let hh=`🃏 <span>Bài của <b>${pname(v,vs)}</b></span> <span class="${hd.length>HANDMAX?"over":""}">${hd.length}/${HANDMAX}</span>`;
+  if(v.roles[vs]==="cp" && v.cp!=null) hh+=` · cất: ${chip(v.cp,`data-cpcard="${v.cp}" style="cursor:pointer"`)}`;
+  hh+=`<span class="sp"></span><button class="lnk" id="roleBtn">${rr.i} ${v.roleNames?"Kỹ năng":rr.n} ⓘ</button>`;
+  $("handhead").innerHTML=hh;
+  const here=v.loc[vs];
+  $("hand").innerHTML = hd.length ? sortHand(hd).map(c=>cardHTML(c, isCity(c)&&c===here?"here":"")).join("") : `<span class="empty">Không có thẻ nào.</span>`;
+  $("hand").querySelectorAll(".card.here").forEach(el=>el.insertAdjacentHTML("beforeend",`<span class="pin">📍</span>`));
+  bindDock();
+}
+function renderActs(){
+  const v=view, el=$("acts");
+  if(!(curMine() && v.phase==="actions" && !v.pending && overLimit(v)<0)){ el.innerHTML=""; el.classList.add("hidden"); return; }
+  el.classList.remove("hidden");
+  const s=v.cur, role=v.roles[s], here=v.loc[s], ok=v.acts>0;
+  el.classList.toggle("wrap", role==="disp");
+  const tre=[0,1,2,3].filter(k=>v.cubes[here][k]>0);
+  const bErr=buildErr(v,s), sh=shareOpts(v,s), cu=cureOpts(v,s);
+  const B=(id,i,t,on,why)=>`<button class="ab ${on&&ok?"":"dis"}" id="${id}" data-why="${esc(ok?why||"":"Đã hết hành động.")}"><span class="i">${i}</span>${t}</button>`;
+  let h="";
+  if(role==="disp"){
+    const pw=activePawn();
+    h+=`<div class="pawnsel"><span class="t">📡 Quân đang điều khiển:</span>${range(v.n).map(p=>`<button data-pawn="${p}" class="${p===pw?"on":""}" title="${pname(v,p)}"><span class="av" style="--rc:${ROLES[v.roles[p]].c}">${ROLES[v.roles[p]].i}</span></button>`).join("")}</div>`;
+  }
+  h+=B("aTreat","💉","Chữa bệnh",tre.length,"Không có khối dịch ở thành phố này.");
+  h+=B("aBuild","🏥","Xây trạm",!bErr,bErr);
+  h+=B("aShare","🤝","Trao đổi",sh.length,"Cần đứng cùng thành phố với đồng đội và có thẻ trùng tên thành phố đó.");
+  h+=B("aCure","🧪","Bào chế",cu.length,cureWhy(v,s));
+  if(role==="ops") h+=B("aOps","⚙️","Bay từ trạm",!v.opsUsed&&v.stations.includes(here)&&v.hands[s].some(isCity), v.opsUsed?"Đã dùng lượt này.":!v.stations.includes(here)?"Phải đứng ở trạm nghiên cứu.":"Cần 1 thẻ thành phố.");
+  if(role==="cp") h+=B("aCp","📋","Lấy sự kiện",v.cp==null&&v.pdisc.some(isEv), v.cp!=null?"Đã cất 1 thẻ rồi.":"Chồng bỏ chưa có thẻ Sự kiện.");
+  el.innerHTML=h;
+}
+function buildErr(v,s){
+  const here=v.loc[s];
+  if(v.stations.includes(here)) return "Đã có trạm ở đây.";
+  if(v.roles[s]!=="ops" && !v.hands[s].includes(here)) return `Cần thẻ ${cname(here)} để xây trạm ở đây.`;
+  return "";
+}
+function shareOpts(v,s){
+  const c=v.loc[s], out=[];
+  for(let q=0;q<v.n;q++){
+    if(q===s || v.loc[q]!==c) continue;
+    v.hands[s].forEach(card=>{ if(isCity(card)&&(card===c||v.roles[s]==="res")) out.push({from:s,to:q,card}); });
+    v.hands[q].forEach(card=>{ if(isCity(card)&&(card===c||v.roles[q]==="res")) out.push({from:q,to:s,card}); });
+  }
+  return out;
+}
+const needFor=(v,s)=>v.roles[s]==="sci"?4:5;
+function cureOpts(v,s){
+  if(!v.stations.includes(v.loc[s])) return [];
+  const need=needFor(v,s);
+  return [0,1,2,3].filter(k=>!v.cured[k] && v.hands[s].filter(c=>isCity(c)&&ccol(c)===k).length>=need);
+}
+function cureWhy(v,s){
+  if(!v.stations.includes(v.loc[s])) return "Phải đứng ở trạm nghiên cứu.";
+  return `Cần ${needFor(v,s)} thẻ cùng màu của bệnh chưa có thuốc.`;
+}
+function moveOpts(v,s,pawn,to){
+  const at=v.loc[pawn], out=[], h=v.hands[s];
+  if(to===at) return out;
+  const path=pathTo(v,at,to);
+  if(path && path.length<=v.acts){
+    const one=path.length===1, shuttle=one&&!ADJ[at].includes(to);
+    out.push({a:{k:"walk",p:pawn,to}, i:shuttle?"🔁":"🚗", t:shuttle?"Bay con thoi":one?"Đi tới (đường bộ/thuỷ)":`Đi ${path.length} chặng`,
+      sub: one?"":"qua "+path.slice(0,-1).map(cname).join(" → "), cost:path.length});
+  }
+  if(h.includes(to)) out.push({a:{k:"direct",p:pawn,card:to}, i:"✈️", t:"Bay thẳng", sub:`bỏ thẻ ${cname(to)}`, cost:1});
+  if(h.includes(at)) out.push({a:{k:"charter",p:pawn,to}, i:"🛩️", t:"Thuê chuyên cơ", sub:`bỏ thẻ ${cname(at)}`, cost:1});
+  if(pawn===s && v.roles[s]==="ops" && !v.opsUsed && v.stations.includes(at) && h.some(isCity))
+    out.push({ops:true, i:"⚙️", t:"Bay từ trạm", sub:"bỏ 1 thẻ thành phố bất kỳ (1 lần/lượt)", cost:1});
+  if(v.roles[s]==="disp" && v.loc.some((l,q)=>q!==pawn&&l===to)) out.push({a:{k:"dispatch",p:pawn,to}, i:"📡", t:"Điều tới chỗ đồng đội", sub:"", cost:1});
+  return out;
+}
+function renderCityCard(){
+  const el=$("citycard"), c=ui.sel;
+  if(c==null || !view){ el.classList.add("hidden"); return; }
+  const v=view, col=ccol(c);
+  let h=`<div class="cch"><span class="cd" style="background:${KCOL[col]}"></span><b>${esc(cname(c))}</b><span class="muted" style="font-size:.78rem">${DIS[col].n} · ${fmtPop(CITY[c][5])}</span><button class="x" id="ccClose">✕</button></div>`;
+  const cubes=v.cubes[c].map((n,k)=>n?`<span class="cb">${range(n).map(()=>`<i style="background:${KCOL[k]}"></i>`).join("")} ${DIS[k].n}</span>`:"").join("");
+  const ps=range(v.n).filter(p=>v.loc[p]===c).map(p=>`${ROLES[v.roles[p]].i} ${pname(v,p)}`).join(", ");
+  const qs=range(v.n).find(p=>v.roles[p]==="qs" && (v.loc[p]===c||ADJ[v.loc[p]].includes(c)));
+  h+=`<div class="cci">${cubes||"<span>Không có dịch</span>"}${qs!=null?"<span>🛡️ Được cách ly bảo vệ</span>":""}${v.stations.includes(c)?"<span>🏥 Trạm nghiên cứu</span>":""}${ps?`<span>👤 ${ps}</span>`:""}</div>`;
+  let opts="";
+  if(ui.pick){
+    opts = ui.pick.valid(c) ? `<button class="mopt go" id="pickGo"><span>${ui.pick.icon}</span><span>${esc(ui.pick.label)} → <b>${esc(cname(c))}</b></span><span class="c">Xác nhận</span></button>`
+      : `<div class="muted" style="font-size:.84rem">Không chọn được thành phố này.</div>`;
+  } else if(canAct()){
+    const pawn=activePawn(), mo=moveOpts(v,v.cur,pawn,c);
+    if(v.loc[pawn]===c) opts=`<div class="muted" style="font-size:.84rem">📍 ${pawn===v.cur?"Bạn":pname(v,pawn)} đang ở đây — dùng các nút hành động bên dưới.</div>`;
+    else if(!mo.length) opts=`<div class="muted" style="font-size:.84rem">Không tới được trong lượt này (còn ${v.acts} hành động).</div>`;
+    else opts=mo.map((o,i)=>`<button class="mopt" data-mo="${i}"><span>${o.i}</span><span>${o.t}${pawn!==v.cur?` (${pname(v,pawn)})`:""}${o.sub?`<small>${esc(o.sub)}</small>`:""}</span><span class="c">${o.cost} HĐ</span></button>`).join("");
+    ui._mo=mo;
+  }
+  if(opts) h+=`<div class="mopts">${opts}</div>`;
+  h+=`<div class="nbrs">Kề: ${ADJ[c].map(d=>`<a href="#" data-goto="${d}" style="color:inherit">${esc(cname(d))}</a>`).join(", ")}</div>`;
+  el.innerHTML=h; el.classList.remove("hidden");
+  $("ccClose").onclick=()=>{ ui.sel=null; renderCityCard(); renderMapState(); };
+  el.querySelectorAll("[data-mo]").forEach(b=>b.onclick=()=>{
+    const o=ui._mo[+b.dataset.mo];
+    if(o.ops) chooseOpsCard(c);
+    else { ui.sel=null; send(o.a); sfx("move"); }
+  });
+  el.querySelectorAll("[data-goto]").forEach(a=>a.onclick=e=>{ e.preventDefault(); selectCity(+a.dataset.goto,true); });
+  const pg=$("pickGo"); if(pg) pg.onclick=()=>{ const p=ui.pick; ui.pick=null; ui.sel=null; p.go(c); render(); };
+}
+function renderPickbar(){
+  const el=$("pickbar");
+  if(!ui.pick){ el.classList.add("hidden"); return; }
+  el.innerHTML=`<span>${ui.pick.icon} ${esc(ui.pick.label)}: chạm vào thành phố đích (viền vàng).</span><button class="btn ghost sm" id="pickCancel">Huỷ</button>`;
+  el.classList.remove("hidden");
+  $("pickCancel").onclick=()=>{ ui.pick=null; ui.sel=null; render(); };
+}
+function selectCity(c,fly){ ui.sel=c; renderCityCard(); renderMapState(); if(fly) flyToCity(c, .6); }
+function onCityTap(c){
+  if(ui.pick && !ui.pick.valid(c)){ toast("Không chọn được thành phố này."); return; }
+  ui.sel = ui.sel===c && !ui.pick ? null : c;
+  renderCityCard(); renderMapState();
+}
+function startPick(p){ ui.pick=p; ui.sel=null; closeOverlay(); render(); if(innerWidth<640) zoomAt(.8); }
+
+function bindDock(){
+  const on=(id,f)=>{ const b=$(id); if(b) b.onclick=f; };
+  $("pstrip").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
+    const p=+b.dataset.p;
+    ui.viewSeat=p; renderDock(); flyToCity(view.loc[p]);
+  });
+  on("undoBtn",()=>send({k:"undo"}));
+  on("endBtn",()=>confirmBox(`Kết thúc lượt sớm?`,`Còn ${view.acts} hành động chưa dùng. Sẽ rút 2 thẻ người chơi ngay.`,"Rút thẻ",()=>{ send({k:"draw"}); }));
+  on("drawBtn",()=>{ send({k:"draw"}); });
+  on("infBtn",()=>send({k:"infect"}));
+  on("epiGoBtn",()=>send({k:"epigo"}));
+  on("rpNowBtn",()=>{ const h=rpHolder(view); startEvent(104,h); });
+  on("discBtn",showDiscard);
+  on("fcOpenBtn",showForecast);
+  on("endInfoBtn",showEnd);
+  on("roleBtn",()=>showRole(viewSeat()));
+  $("handhead").querySelectorAll("[data-cpcard]").forEach(b=>b.onclick=()=>cardSheet(+b.dataset.cpcard, viewSeat(), true));
+  $("hand").querySelectorAll("[data-card]").forEach(b=>b.onclick=()=>cardSheet(+b.dataset.card, viewSeat()));
+  $("acts").querySelectorAll(".ab").forEach(b=>{
+    b.addEventListener("click",()=>{ if(b.classList.contains("dis")){ toast(b.dataset.why||"Chưa làm được."); return; } actClick(b.id); });
+  });
+  $("acts").querySelectorAll("[data-pawn]").forEach(b=>b.onclick=()=>{ ui.pawn=+b.dataset.pawn; renderActs(); bindDock(); renderMapState(); renderCityCard(); flyToCity(view.loc[ui.pawn]); toast(`Đang điều khiển quân ${view.names[ui.pawn]}`); });
+}
+function actClick(id){
+  const v=view, s=v.cur, here=v.loc[s];
+  if(id==="aTreat"){
+    const cols=[0,1,2,3].filter(k=>v.cubes[here][k]>0);
+    if(cols.length===1){ send({k:"treat",col:cols[0]}); sfx("treat"); return; }
+    openModal(`<h2>💉 Chữa bệnh ở ${esc(cname(here))}</h2><p class="sub">Chọn loại dịch muốn chữa.</p><div class="list">${cols.map(k=>{
+      const all=v.cured[k]||v.roles[s]==="medic";
+      return `<button class="mopt" data-col="${k}"><span class="cd" style="width:14px;height:14px;border-radius:3px;background:${KCOL[k]}"></span><span>${DIS[k].n} · ${v.cubes[here][k]} khối<small>${all?"bỏ hết":"bỏ 1 khối"}</small></span><span class="c">1 HĐ</span></button>`; }).join("")}</div>
+      <div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"treat");
+    $("modal").querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>{ closeOverlay(); send({k:"treat",col:+b.dataset.col}); sfx("treat"); });
+  } else if(id==="aBuild"){
+    const txt=v.roles[s]==="ops"?"không cần thẻ (Chuyên gia vận hành)":`bỏ thẻ ${cname(here)}`;
+    if(v.stations.length>=MAXST){
+      openModal(`<h2>🏥 Xây trạm ở ${esc(cname(here))}</h2><p class="sub">Đã đủ 6 trạm — chọn 1 trạm để dời tới đây (${esc(txt)}).</p><div class="list">${v.stations.map(c=>`<button class="mopt" data-rm="${c}"><span>🏥</span><span>Dời trạm từ <b>${esc(cname(c))}</b></span></button>`).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"build");
+      $("modal").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ closeOverlay(); send({k:"build",rm:+b.dataset.rm}); sfx("build"); });
+    } else confirmBox(`🏥 Xây trạm nghiên cứu ở ${cname(here)}?`, `Tốn 1 hành động, ${txt}.`, "Xây", ()=>{ send({k:"build"}); sfx("build"); });
+  } else if(id==="aShare"){
+    const opts=shareOpts(v,s);
+    openModal(`<h2>🤝 Trao đổi kiến thức</h2><p class="sub">Trao hoặc nhận 1 thẻ thành phố với đồng đội đứng cùng chỗ (1 hành động).</p><div class="list">${opts.map((o,i)=>`<button class="mopt" data-sh="${i}">${chip(o.card)}<span>${o.from===s?`Đưa cho <b>${pname(v,o.to)}</b>`:`Lấy từ <b>${pname(v,o.from)}</b>`}</span><span class="c">${o.from===s?"→":"←"}</span></button>`).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"share");
+    $("modal").querySelectorAll("[data-sh]").forEach(b=>b.onclick=()=>{ const o=opts[+b.dataset.sh]; closeOverlay(); send({k:"share",from:o.from,to:o.to,card:o.card}); sfx("share"); });
+  } else if(id==="aCure") showCure();
+  else if(id==="aOps") startPick({icon:"⚙️", label:"Bay từ trạm", valid:c=>c!==here, go:c=>chooseOpsCard(c)});
+  else if(id==="aCp"){
+    const evs=v.pdisc.filter(isEv);
+    openModal(`<h2>📋 Lấy thẻ Sự kiện</h2><p class="sub">Cất 1 thẻ Sự kiện từ chồng bỏ (1 hành động). Khi dùng, thẻ bị loại khỏi trò chơi.</p><div class="list">${evs.map(c=>`<button class="mopt" data-ev="${c}"><span>${EV[c].i}</span><span>${EV[c].n}<small>${EV[c].d}</small></span></button>`).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"cp");
+    $("modal").querySelectorAll("[data-ev]").forEach(b=>b.onclick=()=>{ closeOverlay(); send({k:"cptake",card:+b.dataset.ev}); });
+  }
+}
+function showCure(){
+  const v=view, s=v.cur, need=needFor(v,s), cols=cureOpts(v,s);
+  let col=cols[0], sel=[];
+  const draw=()=>{
+    const cards=v.hands[s].filter(c=>isCity(c)&&ccol(c)===col);
+    if(cards.length===need) sel=cards.slice();
+    openModal(`<h2>🧪 Bào chế thuốc giải</h2><p class="sub">Bỏ ${need} thẻ cùng màu tại trạm nghiên cứu (1 hành động).</p>
+      ${cols.length>1?`<div class="seg" style="justify-content:flex-start">${cols.map(k=>`<button data-k="${k}" class="${k===col?"on":""}">${DIS[k].n}</button>`).join("")}</div>`:""}
+      <div class="cardgrid">${cards.map(c=>cardHTML(c, sel.includes(c)?"sel":"")).join("")}</div>
+      <p class="sub">${cards.length>need?`Chọn ${need} thẻ để bỏ (đã chọn ${sel.length}).`:""}</p>
+      <div class="mrow"><button class="btn ghost" data-close>Huỷ</button><button class="btn gold" id="cureGo" ${sel.length===need?"":"disabled"}>Bào chế thuốc ${DIS[col].n}</button></div>`,"cure");
+    $("modal").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ col=+b.dataset.k; sel=[]; draw(); });
+    $("modal").querySelectorAll("[data-card]").forEach(b=>b.onclick=()=>{
+      const c=+b.dataset.card;
+      if(sel.includes(c)) sel=sel.filter(x=>x!==c); else if(sel.length<need) sel.push(c);
+      draw();
+    });
+    $("cureGo").onclick=()=>{ closeOverlay(); send({k:"cure",col,cards:sel}); };
+  };
+  draw();
+}
+function chooseOpsCard(to){
+  const v=view, s=v.cur, cards=sortHand(v.hands[s].filter(isCity));
+  openModal(`<h2>⚙️ Bay từ trạm tới ${esc(cname(to))}</h2><p class="sub">Chọn 1 thẻ thành phố bất kỳ để bỏ.</p><div class="cardgrid">${cards.map(c=>cardHTML(c)).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"ops");
+  $("modal").querySelectorAll("[data-card]").forEach(b=>b.onclick=()=>{ closeOverlay(); ui.sel=null; send({k:"opsfly",to,card:+b.dataset.card}); sfx("move"); });
+}
+function canPlayEvent(v,holder,card){
+  if(v.phase==="end" || !isMine(holder)) return "";
+  const lim=overLimit(v);
+  if(v.pending){ if(!(v.pending.type==="epi" && card===104)) return "Đang chờ xử lý, chưa dùng được."; }
+  else if(v.phase==="draw") return "Đang rút thẻ.";
+  if(lim>=0 && lim!==holder) return `Chờ ${v.names[lim]} bỏ bớt thẻ.`;
+  if(EV[card].k==="rp" && !v.idisc.length) return "Chồng bỏ Lây nhiễm đang trống.";
+  if(EV[card].k==="quiet" && v.quiet) return "Đang có hiệu lực rồi.";
+  return "ok";
+}
+function cardSheet(card, holder, fromCp){
+  const v=view;
+  let opts=[];
+  if(isEv(card)){
+    const why=canPlayEvent(v,holder,card);
+    if(why==="ok") opts.push(`<button class="btn gold wide" id="csPlay">▶ Dùng ${EV[card].n}</button>`);
+    else if(why) opts.push(`<p class="sub">${esc(why)}</p>`);
+  }
+  if(isCity(card) && holder===v.cur && canAct() && !fromCp){
+    const pawn=activePawn(), at=v.loc[pawn], nm=pawn!==holder?` (đưa ${pname(v,pawn)})`:"";
+    if(card!==at) opts.push(`<button class="mopt" id="csDirect"><span>✈️</span><span>Bay thẳng tới <b>${esc(cname(card))}</b>${nm}<small>bỏ thẻ này</small></span><span class="c">1 HĐ</span></button>`);
+    else opts.push(`<button class="mopt" id="csCharter"><span>🛩️</span><span>Thuê chuyên cơ${nm}<small>bỏ thẻ này, bay tới bất kỳ đâu</small></span><span class="c">1 HĐ</span></button>`);
+    if(card===at && !v.stations.includes(at) && v.roles[holder]!=="ops") opts.push(`<button class="mopt" id="csBuild"><span>🏥</span><span>Xây trạm nghiên cứu ở đây<small>bỏ thẻ này</small></span><span class="c">1 HĐ</span></button>`);
+  }
+  if(!fromCp && overLimit(v)===holder && isMine(holder)) opts.push(`<button class="btn red wide" id="csDisc">🗑️ Bỏ thẻ này</button>`);
+  let head;
+  if(isCity(card)) head=`<div style="display:flex;gap:12px;align-items:center">${cardHTML(card,"big")}<div><h2>${esc(cname(card))}</h2><p class="sub" style="margin:0">Thẻ thành phố · dịch ${DIS[ccol(card)].n} · ${fmtPop(CITY[card][5])}<br>Của ${pname(v,holder)}</p></div></div>`;
+  else head=`<div style="display:flex;gap:12px;align-items:center">${cardHTML(card,"big")}<div><h2>${EV[card].i} ${EV[card].n}</h2><p class="sub" style="margin:0">${EV[card].d}<br>Của ${pname(v,holder)}${fromCp?" (cất trên thẻ vai trò)":""} · dùng bất cứ lúc nào, không tốn hành động.</p></div></div>`;
+  openModal(`${head}<div class="list" style="margin-top:12px">${opts.join("")}${isCity(card)?`<button class="mopt" id="csMap"><span>📍</span><span>Xem trên bản đồ</span></button>`:""}</div><div class="mrow"><button class="btn ghost" data-close>Đóng</button></div>`,"card");
+  const on=(id,f)=>{ const b=$(id); if(b) b.onclick=f; };
+  on("csPlay",()=>{ closeOverlay(); startEvent(card,holder); });
+  on("csDirect",()=>{ closeOverlay(); send({k:"direct",p:activePawn(),card}); sfx("move"); });
+  on("csCharter",()=>{ const pawn=activePawn(), at=v.loc[pawn]; startPick({icon:"🛩️", label:`Thuê chuyên cơ từ ${cname(at)}`, valid:c=>c!==view.loc[pawn], go:c=>{ send({k:"charter",p:pawn,to:c}); sfx("move"); }}); });
+  on("csBuild",()=>{ closeOverlay(); actClick("aBuild"); });
+  on("csDisc",()=>{ closeOverlay(); send({k:"discard",card},holder); });
+  on("csMap",()=>{ closeOverlay(); selectCity(card,true); });
+}
+function startEvent(card,holder){
+  const v=view, k=EV[card].k;
+  if(k==="airlift"){
+    const go=p=>startPick({icon:"🚁", label:`Không vận ${v.names[p]}`, valid:c=>c!==view.loc[p], go:c=>{ send({k:"event",card,p,to:c},holder); sfx("event"); }});
+    if(v.n===1) return go(0);
+    openModal(`<h2>🚁 Không vận</h2><p class="sub">Chọn quân muốn đưa đi.</p><div class="list">${range(v.n).map(p=>`<button class="mopt" data-p="${p}"><span class="av" style="--rc:${ROLES[v.roles[p]].c}">${ROLES[v.roles[p]].i}</span><span>${pname(v,p)}<small>đang ở ${esc(cname(v.loc[p]))}</small></span></button>`).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"air");
+    $("modal").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>go(+b.dataset.p));
+  } else if(k==="grant"){
+    startPick({icon:"🏛️", label:"Tài trợ chính phủ: xây trạm", valid:c=>!view.stations.includes(c), go:c=>{
+      if(view.stations.length>=MAXST){
+        openModal(`<h2>🏛️ Xây trạm ở ${esc(cname(c))}</h2><p class="sub">Đã đủ 6 trạm — chọn 1 trạm để dời đi.</p><div class="list">${view.stations.map(r=>`<button class="mopt" data-rm="${r}"><span>🏥</span><span>Dời trạm từ <b>${esc(cname(r))}</b></span></button>`).join("")}</div><div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"grant");
+        $("modal").querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ closeOverlay(); send({k:"event",card,to:c,rm:+b.dataset.rm},holder); sfx("build"); });
+      } else { send({k:"event",card,to:c},holder); sfx("build"); }
+    }});
+  } else if(k==="rp"){
+    const byCol=[0,1,2,3].map(col=>v.idisc.filter(c=>ccol(c)===col));
+    openModal(`<h2>💪 Cộng đồng kiên cường</h2><p class="sub">Chọn 1 thẻ trong chồng bỏ Lây nhiễm để loại vĩnh viễn — thành phố đó sẽ không bị lây nhiễm từ thẻ này nữa.</p>
+      <div class="cardgrid">${v.idisc.slice().sort((a,b)=>ccol(a)-ccol(b)).map(c=>`<button class="cc k${ccol(c)}" data-c="${c}" style="padding:7px 12px;font-size:.88rem">${esc(cname(c))}</button>`).join("")}</div>
+      <div class="mrow"><button class="btn ghost" data-close>Huỷ</button></div>`,"rp");
+    $("modal").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{ closeOverlay(); send({k:"event",card,c:+b.dataset.c},holder); sfx("event"); });
+  } else if(k==="forecast"){ send({k:"event",card},holder); sfx("event"); }
+  else if(k==="quiet") confirmBox("🌙 Một đêm yên bình?","Bước Lây nhiễm tiếp theo sẽ bị bỏ qua.","Dùng",()=>{ send({k:"event",card},holder); sfx("event"); });
+}
+function showDiscard(){
+  const v=view, p=overLimit(v);
+  if(p<0 || !isMine(p)){ if(overlayId==="discard") closeOverlay(); return; }
+  const h=sortHand(v.hands[p]);
+  openModal(`<h2>✋ Quá ${HANDMAX} thẻ</h2><p class="sub"><b>${pname(v,p)}</b> đang có ${h.length} thẻ — chạm thẻ để bỏ, hoặc dùng thẻ Sự kiện.</p>
+    <div class="cardgrid">${h.map(c=>cardHTML(c)).join("")}</div>`,"discard");
+  $("modal").querySelectorAll("[data-card]").forEach(b=>b.onclick=()=>{
+    const c=+b.dataset.card;
+    if(isEv(c)){
+      openModal(`<h2>${EV[c].i} ${EV[c].n}</h2><p class="sub">${EV[c].d}</p><div class="mrow"><button class="btn red" id="dDisc">🗑️ Bỏ</button><button class="btn gold" id="dPlay">▶ Dùng</button></div>`,"discard2");
+      $("dDisc").onclick=()=>{ closeOverlay(); send({k:"discard",card:c},p); };
+      $("dPlay").onclick=()=>{ closeOverlay(); startEvent(c,p); };
+    } else send({k:"discard",card:c},p);
+  });
+}
+function showForecast(){
+  const v=view, P=v.pending;
+  if(!P || P.type!=="forecast" || !isMine(P.s)){ if(overlayId==="forecast") closeOverlay(); return; }
+  let order=P.cards.slice();
+  const draw=()=>{
+    openModal(`<h2>🔮 Dự báo</h2><p class="sub">Sắp xếp ${order.length} thẻ Lây nhiễm trên cùng. Thẻ <b>số 1</b> sẽ bị lật đầu tiên — đẩy thành phố nguy hiểm xuống dưới.</p>
+      ${order.map((c,i)=>`<div class="fc"><span class="n">${i+1}</span>${chip(c)}<span class="muted" style="font-size:.78rem">${v.cubes[c][ccol(c)]} khối</span><span class="sp"></span>
+        <button data-up="${i}" ${i?"":"disabled"}>▲</button><button data-dn="${i}" ${i<order.length-1?"":"disabled"}>▼</button></div>`).join("")}
+      <div class="mrow"><button class="btn" id="fcGo">Xong — đặt lại lên chồng</button></div>`,"forecast");
+    $("modal").querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.up; [order[i-1],order[i]]=[order[i],order[i-1]]; draw(); });
+    $("modal").querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.dn; [order[i+1],order[i]]=[order[i],order[i+1]]; draw(); });
+    $("fcGo").onclick=()=>{ closeOverlay(); send({k:"fcdone",order},P.s); };
+  };
+  draw();
+}
+function autoModals(){
+  const v=view;
+  if(v.phase==="end") return;
+  const lim=overLimit(v);
+  if(overlayId==="discard") showDiscard();
+  else if(lim>=0 && isMine(lim) && !overlayId) showDiscard();
+  if(v.pending && v.pending.type==="forecast" && isMine(v.pending.s) && !overlayId) showForecast();
+  if(overlayId==="forecast" && !(v.pending && v.pending.type==="forecast")) closeOverlay();
+}
+function confirmBox(title,sub,ok,fn){
+  openModal(`<h2>${esc(title)}</h2><p class="sub">${esc(sub)}</p><div class="mrow"><button class="btn ghost" data-close>Huỷ</button><button class="btn" id="cfOk">${esc(ok)}</button></div>`,"confirm");
+  $("cfOk").onclick=()=>{ closeOverlay(); fn(); };
+}
+function openModal(html,id){
+  $("modal").innerHTML=html; $("overlay").classList.remove("hidden"); overlayId=id;
+  $("modal").querySelectorAll("[data-close]").forEach(b=>b.onclick=closeOverlay);
+}
+function closeOverlay(){ $("overlay").classList.add("hidden"); overlayId=null; }
+$("overlay").addEventListener("click",e=>{
+  if(e.target.id!=="overlay") return;
+  if(["discard","forecast","dc"].includes(overlayId)) return;
+  closeOverlay();
+});
+
+/* ---------- hiệu ứng & tin tức ---------- */
+let newsQ=[], newsT=null, newsCur=null;
+function news(html,cls="",ms=3200){ newsQ.push({html,cls,ms}); if(!newsCur) nextNews(); }
+function nextNews(){
+  clearTimeout(newsT);
+  const el=$("news");
+  newsCur=newsQ.shift();
+  if(!newsCur){ el.classList.add("hidden"); return; }
+  el.className="news "+newsCur.cls; el.innerHTML=newsCur.html; el.classList.remove("hidden");
+  el.style.animation="none"; void el.offsetWidth; el.style.animation="";
+  el.querySelectorAll("[data-goto]").forEach(b=>b.onclick=e=>{ e.stopPropagation(); selectCity(+b.dataset.goto,true); });
+  newsT=setTimeout(nextNews, newsCur.ms + (newsQ.length?0:600));
+}
+$("news").addEventListener("click",nextNews);
+function flash(kind){ const el=$("fx"); el.className=""; void el.offsetWidth; el.className=kind; }
+function shake(){ wrap.classList.remove("shake"); void wrap.offsetWidth; wrap.classList.add("shake"); }
+const goChip=c=>`<button class="cc k${ccol(c)}" data-goto="${c}">${esc(cname(c))}</button>`;
+function playFx(list, intro){
+  if(!list.length) return;
+  const v=view;
+  let delay=0, infN=0;
+  const at=(ms,f)=>setTimeout(f,ms);
+  if(intro){
+    list.filter(e=>e.t==="inf").forEach((e,i)=>at(300+i*160,()=>{ ripple(e.c,KCOL[e.col]); if(i%3===0) sfx("inf"); }));
+    news(`<h4>🌍 Dịch bệnh bùng phát ở 9 thành phố!</h4>Cả đội tập hợp ở <b>Atlanta</b> (trụ sở CDC). Hãy chữa bệnh, trao đổi thẻ và tìm ra thuốc giải cho cả 4 dịch.`,"",5200);
+    return;
+  }
+  for(const e of list){
+    if(e.t==="inf"){ at(delay,()=>{ ripple(e.c,KCOL[e.col]); if(infN++<6) sfx("inf"); }); delay+=140; }
+    else if(e.t==="ob"){ at(delay,()=>{ ripple(e.c,"#ff3349",true); sfx("ob"); shake(); flash("red"); }); delay+=500;
+      news(`<h4>💥 Bùng phát ở ${esc(cname(e.c))}!</h4>Dịch ${DIS[e.col].n} lan sang các thành phố kề bên · lần bùng phát thứ ${countOb(list,e)}/${MAXOB}.<div class="nb">${goChip(e.c)}</div>`,"ob",3600); }
+    else if(e.t==="epi"){ at(delay,()=>{ flash("green"); sfx("epi"); flyToCity(e.c,.55); ripple(e.c,"#3be27a",true); }); delay+=700;
+      news(`<h4>☣️ BÙNG DỊCH!</h4><b>${esc(cname(e.c))}</b> nhận 3 khối ${DIS[e.col].n}. Tốc độ lây nhiễm tăng lên <b>${e.rate}</b>. Các thẻ Lây nhiễm đã bỏ được trộn lại và đặt lên đầu chồng — những thành phố vừa nhiễm sẽ sớm bị nhiễm lại!<div class="nb">${goChip(e.c)}</div>`,"epi",6500); }
+    else if(e.t==="draw"){ sfx("draw"); news(`<h4>🂠 ${pname(v,e.p)} rút 2 thẻ</h4><div class="nb">${e.cards.map(c=>chip(c)).join("")}</div>`,"",2600); }
+    else if(e.t==="infset"){ if(e.cards.length) news(`<h4>🦠 Lây nhiễm ${e.cards.length} thành phố</h4><div class="nb">${e.cards.map(goChip).join("")}</div>`,"",3400); }
+    else if(e.t==="treat"){ ripple(e.c,"#3bd98a"); }
+    else if(e.t==="move"){ ripple(e.c,"#ffffff"); }
+    else if(e.t==="build"){ ripple(e.c,"#ffffff",true); }
+    else if(e.t==="share"){ ripple(e.c,"#2fd4b8"); }
+    else if(e.t==="block"){ at(delay,()=>{ ripple(e.c,"#2fae62"); sfx("block"); }); }
+    else if(e.t==="cure"){ flash("gold"); sfx("cure"); news(`<h4>🧪 Đã có thuốc giải bệnh ${DIS[e.col].n}!</h4>Từ giờ chữa bệnh ${DIS[e.col].n} sẽ bỏ hết khối ở thành phố. Dọn sạch bản đồ để xoá sổ hẳn bệnh này.`,"good",4200); }
+    else if(e.t==="erad"){ flash("gold"); news(`<h4>🌟 Bệnh ${DIS[e.col].n} đã bị xoá sổ!</h4>Thẻ Lây nhiễm màu ${DIS[e.col].n} không còn tác dụng.`,"good",4200); }
+    else if(e.t==="quiet"){ news(`<h4>🌙 Một đêm yên bình</h4>Không có thành phố nào bị lây nhiễm lượt này.`,"good",3000); }
+    else if(e.t==="event"){ sfx("event"); }
+    else if(e.t==="win"){ at(delay+300,()=>{ flash("gold"); sfx("win"); }); }
+    else if(e.t==="lose"){ at(delay+300,()=>{ flash("red"); sfx("lose"); }); }
+  }
+}
+function countOb(list,e){ // số thứ tự lần bùng phát này
+  const after=list.filter(x=>x.t==="ob" && x.id>e.id).length;
+  return view.outbreaks-after;
+}
+
+/* ---------- thông tin ---------- */
+let infoTab="log";
+function openInfo(tab){ infoTab=tab||infoTab; overlayId="info"; $("overlay").classList.remove("hidden"); renderInfo(); }
+function renderInfo(){
+  const v=view, T=[["log","📜 Nhật ký"],["inf","🦠 Lây nhiễm"],["cards","🂠 Thẻ"],["team","👥 Đội"],["rules","📖 Luật"],["set","⚙️"]];
+  let h=`<div class="tabs">${T.map(([k,t])=>`<button data-tab="${k}" class="${k===infoTab?"on":""}">${t}</button>`).join("")}</div>`;
+  if(infoTab==="log") h+=`<div class="log">${v.log.slice().reverse().map(l=>`<div class="${l.k}">${esc(l.t)}</div>`).join("")}</div>`;
+  else if(infoTab==="inf"){
+    h+=`<h3>Tốc độ lây nhiễm</h3><div class="track">${RATES.map((r,i)=>`<span class="rt ${i===v.rate?"on":""}">${r}</span>`).join("")}</div>
+      <h3>Bùng phát: ${v.outbreaks}/${MAXOB}</h3><div class="track">${range(MAXOB+1).map(i=>`<span class="${i===v.outbreaks?(i>=5?"on":"on ok"):""}">${i===MAXOB?"💀":i}</span>`).join("")}</div>
+      <h3>Chồng bỏ Lây nhiễm (${v.idisc.length} thẻ)</h3><p class="sub">Những thẻ này sẽ quay lại đầu chồng sau lần Bùng dịch tới. Chồng úp còn ${v.ideckN} thẻ.</p>`;
+    h+=[0,1,2,3].map(k=>{ const cs=v.idisc.filter(c=>ccol(c)===k); return cs.length?`<div class="cardgrid">${cs.map(c=>`<button class="cc k${k}" data-goto="${c}">${esc(cname(c))} · ${v.cubes[c][k]}</button>`).join("")}</div>`:""; }).join("") || `<p class="muted">Trống.</p>`;
+    if(v.iout.length) h+=`<h3>Đã loại khỏi trò chơi</h3><div class="cardgrid">${v.iout.map(c=>chip(c)).join("")}</div>`;
+    const hot=range(NC).filter(c=>v.cubes[c].some(x=>x>=3));
+    if(hot.length) h+=`<h3>⚠️ Sắp bùng phát (3 khối)</h3><div class="cardgrid">${hot.map(c=>`<button class="cc k${ccol(c)}" data-goto="${c}">${esc(cname(c))}</button>`).join("")}</div>`;
+  } else if(infoTab==="cards"){
+    h+=`<h3>Chồng thẻ người chơi</h3><p>Còn <b>${v.pdeckN}</b> thẻ (≈ ${Math.floor(v.pdeckN/2)} lượt nữa) · còn <b>${v.epiLeft}</b> thẻ Bùng dịch · đã gặp ${v.epis}/${v.diff}.</p>
+      <h3>Chồng bỏ thẻ người chơi (${v.pdisc.length})</h3><div class="cardgrid">${v.pdisc.length?v.pdisc.slice().reverse().map(c=>chip(c)).join(""):"<span class='muted'>Trống.</span>"}</div>`;
+    if(v.evout.length) h+=`<h3>Sự kiện đã loại khỏi trò chơi</h3><div class="cardgrid">${v.evout.map(c=>chip(c)).join("")}</div>`;
+    h+=`<h3>Trạm nghiên cứu (${v.stations.length}/${MAXST})</h3><div class="cardgrid">${v.stations.map(c=>`<button class="cc k${ccol(c)}" data-goto="${c}">🏥 ${esc(cname(c))}</button>`).join("")}</div>`;
+  } else if(infoTab==="team"){
+    h+=range(v.n).map(p=>{ const r=ROLES[v.roles[p]]; return `<div class="role"><span class="av lg" style="--rc:${r.c}">${r.i}</span><div><b>${pname(v,p)}</b>${v.roleNames?"":` · ${r.n}`} <span class="muted">· ở ${esc(cname(v.loc[p]))}</span><div class="rd">${r.d}</div><div class="cardgrid">${sortHand(v.hands[p]).map(c=>chip(c)).join("")||"<span class='muted'>Không có thẻ</span>"}${v.roles[p]==="cp"&&v.cp!=null?` · cất: ${chip(v.cp)}`:""}</div></div></div>`; }).join("");
+  } else if(infoTab==="rules") h+=rulesHTML();
+  else if(infoTab==="set"){
+    h+=`<h3>Cài đặt</h3><div class="list">
+      <button class="mopt" id="sndT"><span>${soundOn?"🔔":"🔕"}</span><span>Âm thanh: <b>${soundOn?"Bật":"Tắt"}</b></span></button>
+      ${roomCode?`<button class="mopt" id="copyT"><span>🔗</span><span>Sao chép link phòng <b>${roomCode}</b></span></button>`:""}
+      ${isHost&&v.phase!=="end"?`<button class="mopt" id="restartT"><span>🔄</span><span>Chơi lại ván mới</span></button>`:""}
+      <button class="mopt" id="leaveT"><span>🚪</span><span>Về sảnh${solo?" (ván được lưu tự động)":""}</span></button></div>
+      <p class="sub">Độ khó: ${DIFF[v.diff]} · ${roomCode?`Phòng ${roomCode}`:"Chơi một mình"}</p>`;
+  }
+  h+=`<div class="mrow"><button class="btn ghost" data-close>Đóng</button></div>`;
+  $("modal").innerHTML=h;
+  $("modal").querySelectorAll("[data-close]").forEach(b=>b.onclick=closeOverlay);
+  $("modal").querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{ infoTab=b.dataset.tab; renderInfo(); $("modal").scrollTop=0; });
+  $("modal").querySelectorAll("[data-goto]").forEach(b=>b.onclick=()=>{ closeOverlay(); selectCity(+b.dataset.goto,true); });
+  const on=(id,f)=>{ const b=$(id); if(b) b.onclick=f; };
+  on("sndT",()=>{ soundOn=!soundOn; try{ localStorage.setItem("daidich-snd",soundOn?"1":"0"); }catch(e){} if(soundOn){ ac(); sfx("turn"); } renderInfo(); });
+  on("copyT",()=>navigator.clipboard.writeText(roomLink()).then(()=>toast("Đã sao chép link!"),()=>toast("Không sao chép được.")));
+  on("restartT",()=>confirmBox("Chơi lại ván mới?","Ván hiện tại sẽ bị bỏ.","Chơi lại",()=>{ newMatch(); }));
+  on("leaveT",()=>{ if(solo||confirm("Rời phòng?")) location.href=location.pathname; });
+}
+function showRole(p){
+  const v=view, r=ROLES[v.roles[p]];
+  openModal(`<div class="role" style="margin-top:0"><span class="av lg" style="--rc:${r.c}">${r.i}</span><div><h2 style="margin:0">${r.n}</h2><div class="muted" style="font-size:.85rem">${pname(v,p)} · đang ở ${esc(cname(v.loc[p]))}</div><div class="rd" style="margin-top:6px">${r.d}</div></div></div>
+    <div class="mrow"><button class="btn ghost" data-close>Đóng</button></div>`,"role");
+}
+function showIntro(){
+  const v=view;
+  if(overlayId) return;
+  openModal(`<h2>🌍 Đội phản ứng nhanh</h2><p class="sub">${DIFF[v.diff]} · ${v.diff} thẻ Bùng dịch · <b>${pname(v,v.cur)}</b> đi trước.</p>
+    ${range(v.n).map(p=>{ const r=ROLES[v.roles[p]]; return `<div class="role"><span class="av lg" style="--rc:${r.c}">${r.i}</span><div><b>${pname(v,p)}</b>${v.roleNames?"":` · ${r.n}`}${!allMine()&&isMine(p)?" <span class='tagm'>(bạn)</span>":""}<div class="rd">${r.d}</div></div></div>`; }).join("")}
+    <p class="sub">Mẹo: chạm thành phố trên bản đồ để di chuyển · kéo để cuộn, chụm 2 ngón để phóng to · chạm thẻ trên tay để xem cách dùng.</p>
+    <div class="mrow"><button class="btn" data-close>Bắt đầu cứu thế giới</button></div>`,"intro");
+}
+function fmtTime(ms){ const s=Math.round(ms/1000), m=Math.floor(s/60); return m>=60?`${Math.floor(m/60)} giờ ${m%60} phút`:`${m} phút ${s%60} giây`; }
+function showEnd(){
+  const v=view;
+  openModal(`<div class="big-t">${v.won?"🏆":"💀"}</div><h2 style="text-align:center">${v.won?"Nhân loại được cứu!":"Thế giới đã thất thủ"}</h2>
+    <p class="sub" style="text-align:center">${esc(v.why)}</p>
+    <table class="stats">
+      <tr><td>Thuốc giải</td><td>${v.cured.filter(Boolean).length}/4 ${v.cured.map((s,k)=>s?`<span style="color:${KCOL[k]}">${s===2?"★":"●"}</span>`:"").join("")}</td></tr>
+      <tr><td>Số lượt</td><td>${v.turn}</td></tr>
+      <tr><td>Bùng phát</td><td>${v.outbreaks}/${MAXOB}</td></tr>
+      <tr><td>Bùng dịch đã gặp</td><td>${v.epis}/${v.diff}</td></tr>
+      <tr><td>Khối dịch đã chữa</td><td>${v.stats.treated}</td></tr>
+      <tr><td>Thời gian</td><td>${fmtTime((v.stats.end||Date.now())-v.stats.start)}</td></tr>
+      <tr><td>Độ khó</td><td>${DIFF[v.diff]}</td></tr>
+    </table>
+    <div class="mrow"><button class="btn ghost" data-close>Xem bản đồ</button><button class="btn" id="againBtn">Chơi lại</button></div>`,"end");
+  $("againBtn").onclick=()=>{ closeOverlay(); send({k:"rematch"}); };
+}
+function rulesHTML(){
+  return `<div class="rules">
+  <p><b>Đại Dịch</b> (Pandemic, Matt Leacock) là trò chơi <b>hợp tác</b>: cả đội cùng thắng hoặc cùng thua. Mọi thông tin đều công khai — hãy bàn bạc với nhau!</p>
+  <h3>🎯 Mục tiêu</h3>
+  <ul><li><b>Thắng</b> ngay khi đội bào chế đủ thuốc giải cho cả 4 bệnh: Xanh, Vàng, Đen, Đỏ.</li>
+  <li><b>Thua</b> nếu: xảy ra <b>8 lần bùng phát</b>; cần đặt khối dịch mà kho màu đó đã hết (24 khối/màu); hoặc chồng thẻ người chơi không đủ 2 lá để rút.</li></ul>
+  <h3>🔁 Mỗi lượt</h3>
+  <ul><li><b>1. Hành động:</b> tối đa 4 hành động (có thể hoàn tác trong lượt).</li>
+  <li><b>2. Rút 2 thẻ người chơi.</b> Gặp thẻ Bùng dịch thì xử lý ngay. Tối đa 7 thẻ trên tay — thừa phải bỏ hoặc dùng Sự kiện.</li>
+  <li><b>3. Lây nhiễm:</b> lật số thẻ Lây nhiễm bằng tốc độ hiện tại (2·2·2·3·3·4·4), mỗi thành phố nhận 1 khối màu của nó.</li></ul>
+  <h3>🏃 Hành động (mỗi cái tốn 1)</h3>
+  <ul><li><b>Đi bộ/đi thuyền:</b> tới thành phố kề (có đường nối).</li>
+  <li><b>Bay thẳng:</b> bỏ 1 thẻ thành phố để bay tới thành phố đó.</li>
+  <li><b>Thuê chuyên cơ:</b> bỏ thẻ trùng thành phố đang đứng để bay tới bất kỳ đâu.</li>
+  <li><b>Bay con thoi:</b> từ trạm nghiên cứu tới trạm nghiên cứu khác.</li>
+  <li><b>Xây trạm nghiên cứu:</b> bỏ thẻ trùng thành phố đang đứng (tối đa 6 trạm; đủ thì dời 1 trạm).</li>
+  <li><b>Chữa bệnh:</b> bỏ 1 khối ở thành phố đang đứng — bỏ <b>hết</b> khối màu đó nếu bệnh đã có thuốc.</li>
+  <li><b>Trao đổi kiến thức:</b> hai người cùng đứng một thành phố, trao/nhận đúng thẻ thành phố đó.</li>
+  <li><b>Bào chế thuốc giải:</b> tại trạm nghiên cứu, bỏ 5 thẻ cùng màu.</li></ul>
+  <h3>☣️ Bùng dịch (Epidemic)</h3>
+  <ul><li><b>Tăng tốc:</b> tốc độ lây nhiễm tăng một nấc.</li>
+  <li><b>Lây nhiễm:</b> lật thẻ <b>dưới đáy</b> chồng Lây nhiễm, thành phố đó nhận 3 khối.</li>
+  <li><b>Tăng cường:</b> trộn chồng bỏ Lây nhiễm và đặt lên <b>đầu</b> chồng — các thành phố vừa nhiễm sẽ sớm bị nhiễm lại.</li></ul>
+  <h3>💥 Bùng phát (Outbreak)</h3>
+  <ul><li>Thành phố đã có 3 khối của một màu mà phải nhận thêm → không đặt thêm, thay vào đó <b>mọi thành phố kề</b> nhận 1 khối màu đó.</li>
+  <li>Có thể gây phản ứng dây chuyền, nhưng mỗi thành phố chỉ bùng phát 1 lần trong một chuỗi. Vòng đỏ nhấp nháy = thành phố có 3 khối.</li></ul>
+  <h3>🌟 Xoá sổ</h3>
+  <ul><li>Bệnh đã có thuốc và không còn khối nào trên bản đồ → bị xoá sổ, thẻ Lây nhiễm màu đó hết tác dụng.</li></ul>
+  <h3>🃏 Thẻ Sự kiện</h3>
+  <ul>${Object.values(EV).map(e=>`<li><b>${e.i} ${e.n}:</b> ${e.d}</li>`).join("")}
+  <li>Dùng bất cứ lúc nào (kể cả lượt người khác), không tốn hành động.</li></ul>
+  <h3>👥 Vai trò</h3>
+  <ul>${Object.values(ROLES).map(r=>`<li><b>${r.i} ${r.n}:</b> ${r.d}</li>`).join("")}</ul>
+  <h3>📱 Mẹo giao diện</h3>
+  <ul><li>Kéo để cuộn bản đồ, chụm 2 ngón (hoặc lăn chuột) để phóng to. Nút ◎ đưa về quân đang hành động, ⤢ xem toàn bản đồ.</li>
+  <li>Chạm thành phố để xem mọi cách đi tới đó — đi nhiều chặng được tự tính đường ngắn nhất.</li>
+  <li>Vòng xanh đứt nét: nơi đi bộ tới được. Ô vuông màu: khối dịch. Ngôi nhà trắng: trạm nghiên cứu.</li>
+  <li>Chạm thẻ trên tay để bay thẳng, thuê chuyên cơ hoặc dùng Sự kiện. Chạm tên đồng đội ở hàng trên để xem bài của họ.</li>
+  <li>Chạm 🦠 hoặc ☰ để xem chồng bỏ Lây nhiễm — biết thành phố nào sắp bị nhiễm lại.</li></ul>
+  </div>`;
+}
+function showRules(){ openModal(`<h2>📖 Luật chơi Đại Dịch</h2>${rulesHTML()}<div class="mrow"><button class="btn" data-close>Đã hiểu</button></div>`,"rules"); }
+
+/* ================= BOOT ================= */
+$("soloBtn").onclick=startSolo;
+$("resumeBtn").onclick=resumeSolo;
+$("createBtn").onclick=createRoom;
+$("joinBtn").onclick=joinRoom;
+$("rulesBtn0").onclick=showRules;
+$("copyBtn").onclick=()=>navigator.clipboard.writeText(roomLink()).then(()=>toast("Đã sao chép link!"),()=>toast("Không sao chép được, hãy copy thủ công."));
+$("codeInput").addEventListener("keydown",e=>{ if(e.key==="Enter") joinRoom(); });
+function syncDiffSeg(){ ["diffSeg","diffSeg2"].forEach(id=>$(id).querySelectorAll("button").forEach(x=>x.classList.toggle("on",+x.dataset.d===diffSel))); }
+["diffSeg","diffSeg2"].forEach(id=>$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  diffSel=+b.dataset.d; syncDiffSeg(); try{ localStorage.setItem("daidich-diff",diffSel); }catch(e){}
+  if(id==="diffSeg2") sendLobby();
+}));
+$("soloSeg").querySelectorAll("button").forEach(b=>b.onclick=()=>{
+  soloN=+b.dataset.n; $("soloSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b));
+  try{ localStorage.setItem("daidich-solo",soloN); }catch(e){}
+});
+$("addLocalBtn").onclick=()=>{
+  if(seats.length>=4) return;
+  const k=seats.filter(s=>s.local).length+1;
+  seats.push({name:`${myName} ${k}`, local:true}); sendLobby();
+};
+$("seatList").addEventListener("click",e=>{
+  const i=e.target.dataset&&e.target.dataset.rm; if(!isHost||i===undefined) return;
+  seats.splice(+i,1); sendLobby();
+});
+$("startBtn").onclick=()=>{ if(seats.length>=2){ state=newGame(seats.map(s=>s.name), diffSel, 1, false); startGameUI(); broadcast(); } };
+$("menuBtn").onclick=()=>openInfo();
+$("obChip").onclick=()=>openInfo("inf");
+$("rateChip").onclick=()=>openInfo("inf");
+$("deckChip").onclick=()=>openInfo("cards");
+$("cures").onclick=()=>openInfo("inf");
+$("zin").onclick=()=>zoomAt(1.4);
+$("zout").onclick=()=>zoomAt(1/1.4);
+$("zme").onclick=()=>{ if(view) flyToCity(view.loc[activePawn()], .7); };
+$("zfit").onclick=()=>flyTo(MAPW/2,MAPH/2,fitK());
+try{
+  const n=localStorage.getItem("daidich-name"); if(n) $("nameInput").value=n;
+  const d=+localStorage.getItem("daidich-diff"); if(DIFF[d]) diffSel=d;
+  const so=+localStorage.getItem("daidich-solo"); if(so>=2&&so<=4){ soloN=so; $("soloSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",+x.dataset.n===so)); }
+  const sv=JSON.parse(localStorage.getItem(SAVEKEY)||"null");
+  if(sv && sv.phase!=="end"){ $("resumeRow").classList.remove("hidden"); $("resumeBtn").textContent=`▶ Tiếp tục ván đang chơi (lượt ${sv.turn}, ${sv.n} nhân vật)`; }
+}catch(e){}
+syncDiffSeg();
+const qs=new URLSearchParams(location.search);
+if(qs.get("room") && !qs.get("host")) $("codeInput").value=qs.get("room").toUpperCase();
+</script>
+</body>
+</html>
